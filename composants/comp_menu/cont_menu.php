@@ -1,0 +1,25 @@
+<?php
+include_once "composants/comp_menu/vue_menu.php";
+
+class ContMenu {
+    private $vue;
+
+    public function __construct() {
+        $this->vue = new VueMenu();
+    }
+
+    public function afficherMenu() {
+        if (isset($_SESSION['login'])) {
+            $html = "<a href='index.php?module=connexion&action=deconnexion'>Déconnexion</a>";
+        } else {
+            $html = "<a href='index.php?module=connexion&action=form_inscription'>Inscription</a> | ";
+            $html .= "<a href='index.php?module=connexion&action=form_connexion'>Connexion</a>";
+        }
+        $this->vue->setMenu($html);
+    }
+
+    public function getVue() {
+        return $this->vue;
+    }
+}
+?>
