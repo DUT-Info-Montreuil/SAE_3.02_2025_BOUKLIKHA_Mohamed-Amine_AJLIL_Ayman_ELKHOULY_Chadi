@@ -1,0 +1,102 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: white;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Bandes bleu */
+.top-bar, .bottom-bar {
+    background: #0066FF;
+    height: 60px;
+    width: 100%;
+}
+
+/* Header */
+header {
+    background: white;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 15px 20px;
+}
+
+header a {
+    color: #0066FF;
+    font-weight: bold;
+    margin-left: 15px;
+}
+
+/* Main */
+.main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Carte */
+.card {
+    background: white;
+    width: 90%;
+    max-width: 380px;
+    padding: 25px;
+    border: 2px solid #0066FF;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+/* Titre */
+.card h2 {
+    text-align: center;
+    color: black;
+    margin-bottom: 20px;
+}
+
+/* Input  */
+.card input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #0066FF;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+/* Bouton */
+.card submit {
+    width: 100%;
+    padding: 12px;
+    background: #0066FF;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Liens */
+.link-center {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.link-center a, .link-center p {
+    color: #0066FF;
+    font-weight: bold;
+}
+
+/* Footer */
+footer {
+    background: white;
+    text-align: center;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #0066FF;
+}
