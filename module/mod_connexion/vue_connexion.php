@@ -1,6 +1,6 @@
 <?php
 
-include_once "vue_generique.php";
+include_once "module/vue_generique.php";
 
 
 class VueConnexion extends VueGenerique {

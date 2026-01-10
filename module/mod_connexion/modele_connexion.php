@@ -1,6 +1,6 @@
 <?php
 
-include_once "connexion.php";
+include_once "module/connexion.php";
 
 class ModeleConnexion extends Connexion {
 
@@ -16,7 +16,7 @@ class ModeleConnexion extends Connexion {
     }
 
     public function ajoutUtilisateur($identifiant, $nom, $prenom, $mdp) {
-        $req = self::$bdd->prepare("INSERT INTO Utilisateur (identifiant, nom, prenom, mdp, solde) VALUES (?, ?, ?, ?, 0)");
+        $req = self::$bdd->prepare("INSERT INTO Utilisateur (identifiant, nom, prenom, mdp, id_role) VALUES (?, ?, ?, ?, 4)");
         $req->execute([$identifiant, $nom, $prenom, $mdp]);
     }
 }

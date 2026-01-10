@@ -3,7 +3,7 @@ session_start();
 
 // --- MODULE PRINCIPAL ---
 $module = isset($_GET['module']) ? $_GET['module'] : 'connexion';
-$modulesAutorises = ['connexion'];
+$modulesAutorises = ['connexion', 'admin'];
 $contenu = '';
 
 if (in_array($module, $modulesAutorises)) {
