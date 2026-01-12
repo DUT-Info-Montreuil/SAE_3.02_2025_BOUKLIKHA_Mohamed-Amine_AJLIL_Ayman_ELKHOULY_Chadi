@@ -65,8 +65,14 @@ class ContConnexion {
                 $_SESSION['identifiant'] = $identifiant;
                 $_SESSION['nom'] = $utilisateur['nom'];
                 $_SESSION['prenom'] = $utilisateur['prenom'];
-                echo "<p>Connexion réussie ! Bienvenue, <b>" . htmlspecialchars($utilisateur['prenom']) . " " . htmlspecialchars($utilisateur['nom']) .
-                    "</b></p>";
+                $_SESSION['id_role'] = $utilisateur['id_role'];
+                if ($utilisateur['id_role'] == 1) {
+                    header("Location: index.php?module=admin"); // redirige vers page admin
+                    exit();
+                } else {
+                    echo "<p>Connexion réussie ! Bienvenue, <b>" . htmlspecialchars($utilisateur['prenom']) . " " . htmlspecialchars($utilisateur['nom']) .
+                        "</b></p>";
+                }
             } else {
                 echo "<p>Erreur : identifiants incorrects ou données manquantes.</p>";
             }
