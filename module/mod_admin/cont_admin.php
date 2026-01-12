@@ -36,7 +36,7 @@ class ContAdmin {
             echo "<p>Association créés avec succès ✅</p>";
 
         } else {
-            echo "<p>Champs manquants</p>";
+            echo " <p>Champs manquants</p>";
         }
 
         $this->vue->formCreationAssociation();
