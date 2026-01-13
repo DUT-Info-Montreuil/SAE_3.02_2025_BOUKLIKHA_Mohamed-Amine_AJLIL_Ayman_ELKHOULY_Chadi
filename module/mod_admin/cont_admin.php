@@ -25,18 +25,20 @@ class ContAdmin {
 
     public function creerAsso() {
 
-        if (!empty($_POST['nom_asso']) && !empty($_POST['adresse']) && !empty($_POST['contact']) && !empty($_POST['identifiant']) && !empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['mdp'])) {
+        if (isset($_POST['nom_asso'])) {
+            if (!empty($_POST['nom_asso']) && !empty($_POST['adresse']) && !empty($_POST['contact']) && !empty($_POST['identifiant']) && !empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['mdp'])) {
 
-            $idAsso = $this->modele->creerAssociation($_POST['nom_asso'], $_POST['adresse'], $_POST['contact']);
+                $idAsso = $this->modele->creerAssociation($_POST['nom_asso'], $_POST['adresse'], $_POST['contact']);
 
-            $idUser = $this->modele->creerGestionnaire($_POST['identifiant'], $_POST['nom'], $_POST['prenom'], $_POST['mdp']);
+                $idUser = $this->modele->creerGestionnaire($_POST['identifiant'], $_POST['nom'], $_POST['prenom'], $_POST['mdp']);
 
-            $this->modele->affecterGestionnaire($idUser, $idAsso, 2);  // 2 => Gestionnaire
+                $this->modele->affecterGestionnaire($idUser, $idAsso, 2);  // 2 => Gestionnaire
 
-            echo "<p>Association créés avec succès ✅</p>";
+                echo "<p>Association créés avec succès</p>";
 
-        } else {
-            echo " <p>Champs manquants</p>";
+            } else {
+                echo " <p>Champs manquants</p>";
+            }
         }
 
         $this->vue->formCreationAssociation();

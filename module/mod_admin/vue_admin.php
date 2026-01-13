@@ -16,6 +16,7 @@ class VueAdmin extends VueGenerique {
         echo "<a href='index.php?module=admin&action=creerAsso'>
                 ➕ Créer une association
               </a><br><br>";
+        echo "<a href='index.php?module=admin&action=accueil'>🏠 Retour à l'accueil</a><br><br>";
         echo "<a href='index.php?module=connexion&action=deconnexion'>Déconnexion</a>";
         echo "</div>";
     }
@@ -34,9 +35,9 @@ class VueAdmin extends VueGenerique {
 
         echo "<h3>Gestionnaire</h3>";
         echo "<label>Identifiant :</label> <input type='text' name='identifiant'><br>";
-        echo "<label>Nom : :</label> <input type='text' name='nom'><br>";
-        echo "<label>Prénom : :</label> <input type='text' name='prenom'><br>";
-        echo "<label>Mot de passe : :</label> <input type='password' name='mdp'><br>";
+        echo "<label>Nom : </label> <input type='text' name='nom'><br>";
+        echo "<label>Prénom : </label> <input type='text' name='prenom'><br>";
+        echo "<label>Mot de passe : </label> <input type='password' name='mdp'><br>";
 
         echo "<input type='submit' value='Créer'>";
 
