@@ -9,14 +9,25 @@ class ContMenu {
     }
 
     public function afficherMenu() {
-        if (isset($_SESSION['login'])) {
-            $html = "<a href='index.php?module=connexion&action=deconnexion'>Déconnexion</a>";
+
+        $html = "";
+
+        if (isset($_SESSION['identifiant'])) {
+
+            if ($_SESSION['id_role'] == 1) {
+                $html .= "<a href='index.php?module=admin'>Accueil</a> | ";
+            }
+
+            $html .= "<a href='index.php?module=connexion&action=deconnexion'>Déconnexion</a>";
+
         } else {
-            $html = "<a href='index.php?module=connexion&action=form_inscription'>Inscription</a> | ";
+            $html .= "<a href='index.php?module=connexion&action=form_inscription'>Inscription</a> | ";
             $html .= "<a href='index.php?module=connexion&action=form_connexion'>Connexion</a>";
         }
+
         $this->vue->setMenu($html);
     }
+
 
     public function getVue() {
         return $this->vue;
