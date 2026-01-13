@@ -64,7 +64,7 @@ class VueGestionnaire extends VueGenerique {
     public function afficherAccueil() {
         echo "<div class='card'>";
         echo "<h1>Bienvenue Gestionnaire " . htmlspecialchars($_SESSION['prenom']) . " " . htmlspecialchars($_SESSION['nom']) . "</h1>";
-        echo "<p>Vous pouvez gérer les barmans de votre association.</p>";
+        echo "<p>Vous pouvez gérer les barmans, les fournisseurs et les produits de votre association.</p>";
         echo "<a href='index.php?module=gestionnaire&action=creerBarman'>👤 Créer un barman</a><br><br>";
         echo "<a href='index.php?module=gestionnaire&action=creerFournisseur'>📦 Créer un fournisseur</a><br><br>";
         echo "<a href='index.php?module=gestionnaire&action=creerProduit'>🍾 Créer un produit</a><br><br>";
