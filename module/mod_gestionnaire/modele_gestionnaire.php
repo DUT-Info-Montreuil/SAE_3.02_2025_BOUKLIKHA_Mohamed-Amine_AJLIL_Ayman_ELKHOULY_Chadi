@@ -33,6 +33,13 @@ class ModeleGestionnaire extends Connexion {
         return $req->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getFournisseurParNom($nom) {
+        $req = self::$bdd->prepare("SELECT * FROM Fournisseur WHERE nom = ?");
+        $req->execute([$nom]);
+        return $req->fetch(PDO::FETCH_ASSOC);
+    }
+
+
 
     public function affecterBarman($idUtilisateur, $idAssociation) {
         $req = self::$bdd->prepare("INSERT INTO Affectation (id_utilisateur, id_association, id_role, solde) VALUES (?, ?, 3, 0)");

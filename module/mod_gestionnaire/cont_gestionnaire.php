@@ -53,6 +53,14 @@ class ContGestionnaire {
             $nom = $_POST['nom'];
             $telephone = $_POST['telephone'];
 
+            $existe = $this->modele->getFournisseurParNom($nom);
+
+            if ($existe) {
+                echo "<p>Erreur : Fournisseur déjà existant.</p>";
+                $this->vue->formCreationFournisseur();
+                return;
+            }
+
             $this->modele->creerFournisseur($nom, $telephone);
 
             echo "<p>Fournisseur créé avec succès ✅</p>";
