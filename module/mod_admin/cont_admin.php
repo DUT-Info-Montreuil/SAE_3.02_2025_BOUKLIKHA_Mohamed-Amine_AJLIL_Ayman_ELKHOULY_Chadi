@@ -33,7 +33,7 @@ class ContAdmin {
     public function creerAsso() {
 
         if (isset($_POST['nom_asso'])) {
-            if (!empty($_POST['nom_asso']) && !empty($_POST['adresse']) && !empty($_POST['contact']) && !empty($_POST['url']) && !empty($_POST['identifiant']) && !empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['mdp'])) {
+            if (!empty($_POST['nom_asso']) && !empty($_POST['adresse']) && !empty($_POST['contact']) && !empty($_POST['identifiant']) && !empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['mdp'])) {
 
                 $nomAsso = $_POST['nom_asso'];
                 $url = "https://www." . $nomAsso . ".fr";
