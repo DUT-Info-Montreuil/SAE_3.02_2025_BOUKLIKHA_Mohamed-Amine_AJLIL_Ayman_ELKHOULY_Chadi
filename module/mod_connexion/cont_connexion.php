@@ -59,9 +59,11 @@ class ContConnexion {
             $identifiant = $_POST['identifiant'];
             $mdp = $_POST['mdp'];
             $utilisateur = $this->modele->getUtilisateur($identifiant);
+            $id_utilisateur = $utilisateur['id_utilisateur'];
             $hash = $utilisateur['mdp'];
 
             if (isset($utilisateur) && password_verify($mdp, $hash)) {
+                $_SESSION['id_utilisateur'] = $id_utilisateur;
                 $_SESSION['identifiant'] = $identifiant;
                 $_SESSION['nom'] = $utilisateur['nom'];
                 $_SESSION['prenom'] = $utilisateur['prenom'];
@@ -69,7 +71,14 @@ class ContConnexion {
                 if ($utilisateur['id_role'] == 1) {
                     header("Location: index.php?module=admin"); // redirige vers page admin
                     exit();
-                } else {
+                }
+                else if ($utilisateur['id_role'] == 2){
+                    $asso = $this->modele->getAssociationUtilisateur($utilisateur['id_utilisateur']);
+                    $_SESSION['id_association'] = $asso['id_association'];
+                    header("Location: index.php?module=gestionnaire"); // redirige vers page gestionnaire
+                    exit();
+                }
+                else {
                     echo "<p>Connexion réussie ! Bienvenue, <b>" . htmlspecialchars($utilisateur['prenom']) . " " . htmlspecialchars($utilisateur['nom']) .
                         "</b></p>";
                 }
