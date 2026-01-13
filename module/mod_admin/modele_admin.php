@@ -9,10 +9,16 @@ class ModeleAdmin extends Connexion {
     }
 
 
-    public function creerAssociation($nom, $adresse, $contact) {
-        $req = self::$bdd->prepare("INSERT INTO Association (nom, adresse, contact) VALUES (?, ?, ?)");
-        $req->execute([$nom, $adresse, $contact]);
+    public function creerAssociation($nom_asso, $adresse, $contact, $url) {
+        $req = self::$bdd->prepare("INSERT INTO Association (nom_asso, adresse, contact, url) VALUES (?, ?, ?, ?)");
+        $req->execute([$nom_asso, $adresse, $contact, $url]);
         return self::$bdd->lastInsertId();
+    }
+
+    public function getAssociations() {
+        $req = self::$bdd->prepare("SELECT * FROM Association");
+        $req->execute();
+        return $req->fetchAll();
     }
 
     public function creerGestionnaire($identifiant, $nom, $prenom, $mdp) {

@@ -19,6 +19,9 @@ class ModAdmin {
             case 'creerAsso' :
                 $this->controleur->creerAsso();
                 break;
+            case 'sites':
+                $this->controleur->sites();
+                break;
             default:
                 $this->controleur->accueil();
                 break;

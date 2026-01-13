@@ -9,14 +9,11 @@ class VueAdmin extends VueGenerique {
 
     public function afficherAccueil() {
         echo "<div class='card'>";
-        echo "<h1>Bienvenue Admin "
-            . htmlspecialchars($_SESSION['prenom']) . " "
-            . htmlspecialchars($_SESSION['nom']) . "</h1>";
+        echo "<h1>Bienvenue Admin " . htmlspecialchars($_SESSION['prenom']) . " " . htmlspecialchars($_SESSION['nom']) . "</h1>";
         echo "<p>Vous pouvez gérer les associations et les gestionnaires.</p>";
-        echo "<a href='index.php?module=admin&action=creerAsso'>
-                ➕ Créer une association
-              </a><br><br>";
-        echo "<a href='index.php?module=admin&action=accueil'>🏠 Retour à l'accueil</a><br><br>";
+        echo "<a href='index.php?module=admin&action=creerAsso'>➕ Créer une association </a><br><br>";
+        echo "<a href='index.php?module=admin&action=sites'> 🌐 Sites des associations </a><br><br>";
+
         echo "<a href='index.php?module=connexion&action=deconnexion'>Déconnexion</a>";
         echo "</div>";
     }
@@ -41,10 +38,28 @@ class VueAdmin extends VueGenerique {
 
         echo "<input type='submit' value='Créer'>";
 
-        echo "<a href='index.php?module=admin&action=accueil'>🏠 Retour à l'accueil</a><br><br>";
-
         echo "</form>";
         echo "</div>";
     }
+
+
+    public function afficherSitesAssociations($associations) {
+
+        echo "<div class='card'>";
+        echo "<h2>Sites des associations</h2>";
+
+        if (empty($associations)) {
+            echo "<p>Aucune association.</p>";
+        } else {
+            foreach ($associations as $asso) {
+                echo "<p>";
+                echo "<strong>" . htmlspecialchars($asso['nom_asso']) . "</strong>";
+                echo "<input type='text' value='" . htmlspecialchars($asso['url']) . "' readonly>";
+                echo "</p>";
+            }
+        }
+        echo "</div>";
+    }
+
 }
 ?>

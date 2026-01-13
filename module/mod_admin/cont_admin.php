@@ -21,14 +21,24 @@ class ContAdmin {
         }
 
         $this->vue->afficherAccueil();
+
     }
+
+    public function sites() {
+        $associations = $this->modele->getAssociations();
+        $this->vue->afficherSitesAssociations($associations);
+    }
+
 
     public function creerAsso() {
 
         if (isset($_POST['nom_asso'])) {
-            if (!empty($_POST['nom_asso']) && !empty($_POST['adresse']) && !empty($_POST['contact']) && !empty($_POST['identifiant']) && !empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['mdp'])) {
+            if (!empty($_POST['nom_asso']) && !empty($_POST['adresse']) && !empty($_POST['contact']) && !empty($_POST['url']) && !empty($_POST['identifiant']) && !empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['mdp'])) {
 
-                $idAsso = $this->modele->creerAssociation($_POST['nom_asso'], $_POST['adresse'], $_POST['contact']);
+                $nomAsso = $_POST['nom_asso'];
+                $url = "https://www." . $nomAsso . ".fr";
+
+                $idAsso = $this->modele->creerAssociation($_POST['nom_asso'], $_POST['adresse'], $_POST['contact'], $url);
 
                 $idUser = $this->modele->creerGestionnaire($_POST['identifiant'], $_POST['nom'], $_POST['prenom'], $_POST['mdp']);
 
