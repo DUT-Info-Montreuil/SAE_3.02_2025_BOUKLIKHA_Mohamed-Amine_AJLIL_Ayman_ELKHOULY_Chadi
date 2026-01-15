@@ -70,13 +70,12 @@ class ContConnexion {
                 $_SESSION['id_role'] = $utilisateur['id_role'];
                 if ($utilisateur['id_role'] == 1) {
                     header("Location: index.php?module=admin"); // redirige vers page admin
-                    exit();
                 }
                 else if ($utilisateur['id_role'] == 2){
-                    $asso = $this->modele->getAssociationUtilisateur($utilisateur['id_utilisateur']);
-                    $_SESSION['id_association'] = $asso['id_association'];
                     header("Location: index.php?module=gestionnaire"); // redirige vers page gestionnaire
-                    exit();
+                }
+                else if ($utilisateur['id_role'] == 3){
+                    header("Location: index.php?module=barman"); // redirige vers page barman
                 }
                 else {
                     echo "<p>Connexion réussie ! Bienvenue, <b>" . htmlspecialchars($utilisateur['prenom']) . " " . htmlspecialchars($utilisateur['nom']) .

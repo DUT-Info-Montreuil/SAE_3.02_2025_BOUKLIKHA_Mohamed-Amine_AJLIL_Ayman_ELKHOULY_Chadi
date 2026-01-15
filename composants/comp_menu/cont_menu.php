@@ -22,6 +22,10 @@ class ContMenu {
                 $html .= "<a href='index.php?module=gestionnaire'>Accueil</a> | ";
             }
 
+            if ($_SESSION['id_role'] == 3) {
+                $html .= "<a href='index.php?module=barman'>Accueil</a> | ";
+            }
+
             $html .= "<a href='index.php?module=connexion&action=deconnexion'>Déconnexion</a>";
 
         } else {
