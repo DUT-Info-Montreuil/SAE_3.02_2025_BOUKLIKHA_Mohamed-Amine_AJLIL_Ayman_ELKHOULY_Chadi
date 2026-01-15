@@ -21,15 +21,45 @@ class ContClient {
             exit();
         }
 
-        $idUtilisateur  = $_SESSION['id_utilisateur'];
-        $idAssociation  = $_SESSION['id_association'];
+        $idUtilisateur = $_SESSION['id_utilisateur'];
 
-        $solde = $this->modele->getSolde($idUtilisateur, $idAssociation);
+        $affectation = $this->modele->getAffectation($idUtilisateur);
 
-        $this->vue->afficherAccueil($solde);
+        if (!$affectation) {
+            $this->vue->afficherAccueilSansAffecter();
+        } else {
+            $_SESSION['id_association'] = $affectation['id_association'];   // Validé
+            $solde = $affectation['solde'];
+            $this->vue->afficherAccueil($solde);
+        }
+
+
+
+
     }
+
+    public function choisirAsso() {
+
+        if ($_SESSION['id_role'] != 4) {
+            echo "Accès refusé";
+            exit();
+        }
+
+        // clic sur "demander"
+        if (isset($_POST['id_association'])) {
+            $_SESSION['demande_association'] = $_POST['id_association'];
+            echo "<p>Demande envoyée. En attente de validation.</p>";
+        }
+
+        $associations = $this->modele->getAssociations();
+        $this->vue->afficherChoixAssociation($associations);
+    }
+
+
 
     public function getVue() {
         return $this->vue;
     }
+
+
 }

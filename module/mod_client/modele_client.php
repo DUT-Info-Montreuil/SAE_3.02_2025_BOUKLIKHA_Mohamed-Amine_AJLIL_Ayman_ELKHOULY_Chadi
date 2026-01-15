@@ -23,6 +23,21 @@ class ModeleClient extends Connexion {
 
     }
 
+    public function getAssociations() {
+        $req = self::$bdd->prepare("SELECT * FROM Association");
+        $req->execute();
+        return $req->fetchAll();
+    }
+
+    public function getAffectation($idUtilisateur) {
+        $req = self::$bdd->prepare("SELECT * FROM Affectation WHERE id_utilisateur = ? ");
+        $req->execute([$idUtilisateur]);
+        return $req->fetch();
+    }
+
+
+
+
 
 }
 ?>

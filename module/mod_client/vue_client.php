@@ -14,9 +14,7 @@ class VueClient extends VueGenerique {
             . htmlspecialchars($_SESSION['prenom']) . " "
             . htmlspecialchars($_SESSION['nom']) . "</h1>";
 
-        echo "<h3>Mon solde</h3>";
-
-        echo "<a href='index.php?module=client&action=recharger'>Mon solde</a><br>";
+        echo "<h3>" . htmlspecialchars($solde) . " €</h3>";
         echo "<a href='index.php?module=client&action=recharger'>Recharger</a><br>";
         echo "<a href='index.php?module=client&action=historique'>Historique</a><br>";
         echo "<a href='index.php?module=client&action=qrcode'>QR Code</a><br>";
@@ -24,6 +22,37 @@ class VueClient extends VueGenerique {
         echo "<a href='index.php?module=connexion&action=deconnexion'>Déconnexion</a>";
         echo "</div>";
     }
+
+    public function afficherAccueilSansAffecter() {
+
+        echo "<div class='card'>";
+        echo "<h1>Bienvenue "
+            . htmlspecialchars($_SESSION['prenom']) . " "
+            . htmlspecialchars($_SESSION['nom']) . "</h1>";
+
+        echo "<p>Vous devez rejoindre une association ou votre compte est en attente de validation.</p><br>";
+        echo "<a href='index.php?module=client&action=choisirAsso'>Choisir une association </a><br>";
+        echo "<a href='index.php?module=connexion&action=deconnexion'>Déconnexion</a>";
+        echo "</div>";
+    }
+
+
+    public function afficherChoixAssociation($associations) {
+
+        echo "<div class='card'>";
+        echo "<h2>Choisir une association</h2>";
+
+        foreach ($associations as $asso) {
+            echo "<form method='post'>";
+            echo "<strong>" . htmlspecialchars($asso['nom_asso']) . "</strong><br>";
+            echo "<input type='hidden' name='id_association' value='" . htmlspecialchars($asso['id_association']) . "'>";
+            echo "<input type='submit' value='Demander à rejoindre'>";
+            echo "</form><hr>";
+        }
+
+        echo "</div>";
+    }
+
 
 
 }
