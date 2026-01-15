@@ -73,9 +73,11 @@ class ContConnexion {
                     exit();
                 }
                 else if ($utilisateur['id_role'] == 2){
-                    $asso = $this->modele->getAssociationUtilisateur($utilisateur['id_utilisateur']);
-                    $_SESSION['id_association'] = $asso['id_association'];
                     header("Location: index.php?module=gestionnaire"); // redirige vers page gestionnaire
+                    exit();
+                }
+                else if ($utilisateur['id_role'] == 4){
+                    header("Location: index.php?module=client"); // redirige vers page client
                     exit();
                 }
                 else {
