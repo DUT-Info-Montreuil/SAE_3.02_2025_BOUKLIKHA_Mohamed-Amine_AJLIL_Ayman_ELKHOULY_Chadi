@@ -9,10 +9,6 @@ class ModeleClient extends Connexion {
     }
 
 
-    public function rechargerSolde($idUtilisateur, $idAssociation, $idRole) {
-        $req = self::$bdd->prepare("INSERT INTO Affectation (id_utilisateur, id_association, id_role, solde) VALUES (?, ?, ?, ?)");
-        $req->execute([$idUtilisateur, $idAssociation, $idRole]);
-    }
 
 
     public function getSolde($idUtilisateur, $idAssociation) {
@@ -20,7 +16,19 @@ class ModeleClient extends Connexion {
         ");
         $req->execute([$idUtilisateur, $idAssociation]);
         return $req->fetch();
+    }
 
+    public function verifierMotDePasse($idUtilisateur, $mdp) {
+        $req = self::$bdd->prepare("SELECT mdp FROM Utilisateur WHERE id_utilisateur = ?");
+        $req->execute([$idUtilisateur]);
+        $hash = $req->fetchColumn();
+
+        return password_verify($mdp, $hash);
+    }
+
+    public function ajouterSolde($idUtilisateur, $idAssociation, $montant) {
+        $req = self::$bdd->prepare(" UPDATE Affectation SET solde = solde + ? WHERE id_utilisateur = ? AND id_association = ? ");
+        $req->execute([$montant, $idUtilisateur, $idAssociation]);
     }
 
     public function getAssociations() {

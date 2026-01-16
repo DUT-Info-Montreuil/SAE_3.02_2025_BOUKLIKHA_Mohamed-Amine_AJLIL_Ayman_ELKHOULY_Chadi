@@ -19,6 +19,9 @@ class ModClient {
             case 'choisirAsso':
                 $this->controleur->choisirAsso();
                 break;
+            case 'recharger':
+                $this->controleur->recharger();
+                break;
 
             default:
                 $this->controleur->accueil();
