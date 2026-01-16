@@ -15,6 +15,11 @@ class ModBarman {
     public function exec() {
         switch ($this->action) {
             case 'accueil':
+                $this->controleur->accueil();
+                break;
+            case 'voirStock':
+                $this->controleur->voirStock();
+                break;
             default:
                 $this->controleur->accueil();
                 break;
