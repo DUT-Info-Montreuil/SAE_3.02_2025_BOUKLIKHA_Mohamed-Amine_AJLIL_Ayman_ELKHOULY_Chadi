@@ -54,6 +54,31 @@ class VueClient extends VueGenerique {
     }
 
 
+    public function formRecharger() {
+
+        echo "<div class='card'>";
+        echo "<h2>Recharger mon compte</h2>";
+
+        echo "<form method='post'>";
+
+        echo "<label>Montant :</label><br>";
+        echo "<select name='montant'>
+            <option value='10'>10 €</option>
+            <option value='20'>20 €</option>
+            <option value='50'>50 €</option>
+            </select><br><br>";
+
+        echo "<label>Confirmer votre mot de passe :</label><br>";
+        echo "<input type='password' name='mdp' required><br><br>";
+
+        echo "<input type='submit' value='Recharger'>";
+        echo "</form>";
+
+        echo "</div>";
+    }
+
+
+
 
 }
 ?>

@@ -56,6 +56,46 @@ class ContClient {
     }
 
 
+    public function recharger() {
+
+        if (!isset($_SESSION['identifiant']) || $_SESSION['id_role'] != 4) {
+            echo "Accès refusé";
+            exit();
+        }
+
+        if (isset($_POST['montant'], $_POST['mdp'])) {
+
+            $montant = (int) $_POST['montant'];
+            $mdp = $_POST['mdp'];
+
+            // Montants autorisés
+            if (!in_array($montant, [10, 20, 50])) {
+                echo "<p>Montant invalide</p>";
+                $this->vue->formRecharger();
+                return;
+            }
+
+            $idUtilisateur = $_SESSION['id_utilisateur'];
+            $idAssociation = $_SESSION['id_association'];
+
+            // Vérification mot de passe
+            if (!$this->modele->verifierMotDePasse($idUtilisateur, $mdp)) {
+                echo "<p>Mot de passe incorrect</p>";
+                $this->vue->formRecharger();
+                return;
+            }
+
+            // Recharge
+            $this->modele->ajouterSolde($idUtilisateur, $idAssociation, $montant);
+
+            echo "<p>Recharge effectuée avec succès ✅</p>";
+        }
+
+        $this->vue->formRecharger();
+    }
+
+
+
 
     public function getVue() {
         return $this->vue;
