@@ -25,6 +25,7 @@ class ContGestionnaire {
 
         if (!empty($_POST['identifiant']) && !empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['mdp'])) {
                 $identifiant = $_POST['identifiant'];
+                $idAsso = $_SESSION['id_association'];
                 $existe = $this->modeleConnexion->getUtilisateur($identifiant);
 
                 if ($existe) {
@@ -35,7 +36,7 @@ class ContGestionnaire {
 
             $idBarman = $this->modele->creerBarman($_POST['identifiant'], $_POST['nom'], $_POST['prenom'], $_POST['mdp']);
 
-            $this->modele->affecterBarman($idBarman, $_SESSION['id_association']);
+            $this->modele->affecterBarman($idBarman, $idAsso);
 
             echo "<p>Barman créé avec succès ✅</p>";
         }
