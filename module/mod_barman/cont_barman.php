@@ -14,11 +14,6 @@ class ContBarman {
     }
 
     public function accueil() {
-        if (!isset($_SESSION['identifiant']) || $_SESSION['id_role'] != 3) {
-            echo "<p>Accès refusé : vous devez être barman.</p>";
-            exit();
-        }
-
         $this->vue->afficherAccueil();
     }
 

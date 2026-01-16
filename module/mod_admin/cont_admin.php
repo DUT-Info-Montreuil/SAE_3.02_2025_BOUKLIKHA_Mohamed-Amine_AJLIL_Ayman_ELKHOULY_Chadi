@@ -24,11 +24,6 @@ class ContAdmin {
 
     }
 
-    public function sites() {
-        $associations = $this->modele->getAssociations();
-        $this->vue->afficherSitesAssociations($associations);
-    }
-
 
 
     public function accepterCreationAsso() {
@@ -62,29 +57,6 @@ class ContAdmin {
 
 
 
-
-
-    public function validationClients() {
-
-        if ($_SESSION['id_role'] != 1) {
-            echo "Accès refusé";
-            exit();
-        }
-
-        // si l’admin clique sur accepter
-        if (isset($_POST['id_utilisateur'], $_POST['id_association'])) {
-            $this->modele->validerClient(
-                $_POST['id_utilisateur'],
-                $_POST['id_association']
-            );
-            echo "<p>Client validé avec succès.</p>";
-        }
-
-        $clients = $this->modele->getClientsSansAffectation();
-        $associations = $this->modele->getAssociations();
-
-        $this->vue->afficherValidationClients($clients, $associations);
-    }
 
 
 

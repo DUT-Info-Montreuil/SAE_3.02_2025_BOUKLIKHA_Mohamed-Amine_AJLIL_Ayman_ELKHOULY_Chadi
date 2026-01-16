@@ -17,18 +17,21 @@ class ModGestionnaire {
                 $this->controleur->accueil();
                 break;
 
+            case 'validationClients':
+                $this->controleur->validationClients();
+                break;
+            case 'site':
+                $this->controleur->site();
+                break;
             case 'creerBarman':
                 $this->controleur->creerBarman();
                 break;
-
             case 'creerFournisseur':
                 $this->controleur->creerFournisseur();
                 break;
-
             case 'creerProduit':
                 $this->controleur->creerProduit();
                 break;
-
             default:
                 $this->controleur->accueil();
                 break;

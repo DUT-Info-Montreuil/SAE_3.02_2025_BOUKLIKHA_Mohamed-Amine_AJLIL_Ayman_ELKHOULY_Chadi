@@ -8,11 +8,6 @@ class ModeleAdmin extends Connexion {
         self::initConnexion();
     }
 
-    public function getAssociations() {
-        $req = self::$bdd->prepare("SELECT * FROM Association");
-        $req->execute();
-        return $req->fetchAll();
-    }
 
     public function getDemandesAssociation() {
         $req = self::$bdd->prepare("
@@ -51,18 +46,9 @@ class ModeleAdmin extends Connexion {
         $req->execute([$idUtilisateur, $idAssociation]);
     }
 
-    public function getClientsSansAffectation() {
-        $req = self::$bdd->prepare("SELECT u.id_utilisateur, u.identifiant, u.nom, u.prenom FROM Utilisateur u
-                                    WHERE u.id_role = 4
-                                    AND u.id_utilisateur NOT IN (SELECT id_utilisateur FROM Affectation)");
-        $req->execute();
-        return $req->fetchAll();
-    }
 
-    public function validerClient($idUtilisateur, $idAssociation) {
-        $req = self::$bdd->prepare("INSERT INTO Affectation (id_utilisateur, id_association, id_role, solde) VALUES (?, ?, 4, 0)");
-        $req->execute([$idUtilisateur, $idAssociation]);
-    }
+
+
 
 }
 ?>

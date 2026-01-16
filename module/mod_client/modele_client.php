@@ -18,13 +18,12 @@ class ModeleClient extends Connexion {
         return $req->fetch();
     }
 
-    public function creerAssociation($nom, $adresse, $contact, $url) {
-        $req = self::$bdd->prepare("
-        INSERT INTO Association (nom_asso, adresse, contact, url)
-        VALUES (?, ?, ?, ?)
-    ");
-        $req->execute([$nom, $adresse, $contact, $url]);
+    public function getAssociationParId($idAssociation) {
+        $req = self::$bdd->prepare("SELECT * FROM Association WHERE id_association = ?");
+        $req->execute([$idAssociation]);
+        return $req->fetch(PDO::FETCH_ASSOC);
     }
+
 
     public function creerDemandeAsso($idUtilisateur, $nom, $adresse, $contact, $url) {
         $req = self::$bdd->prepare("
@@ -33,6 +32,33 @@ class ModeleClient extends Connexion {
     ");
         $req->execute([$idUtilisateur, $nom, $adresse, $contact, $url]);
     }
+
+    public function getAssoParNom($nomAsso) {
+        $req = self::$bdd->prepare("SELECT * FROM Association WHERE nom_asso = ?");
+        $req->execute([$nomAsso]);
+        return $req->fetch(PDO::FETCH_ASSOC);
+    }
+
+
+
+
+    public function creerDemandeClient($idUtilisateur, $idAssociation) {
+        $req = self::$bdd->prepare("
+        INSERT INTO DemandeClient (id_utilisateur, id_association)
+        VALUES (?, ?)
+    ");
+        $req->execute([$idUtilisateur, $idAssociation]);
+    }
+
+
+    public function demandeExiste($idUtilisateur, $idAssociation) {
+        $req = self::$bdd->prepare("SELECT * FROM DemandeClient 
+                                    WHERE id_utilisateur = ? AND id_association = ?
+    ");
+        $req->execute([$idUtilisateur, $idAssociation]);
+        return $req->fetch(PDO::FETCH_ASSOC);
+    }
+
 
 
 
@@ -60,6 +86,33 @@ class ModeleClient extends Connexion {
         $req->execute([$idUtilisateur]);
         return $req->fetch();
     }
+
+
+
+    public function getAssociationsClient($idUtilisateur) {
+        $req = self::$bdd->prepare("
+        SELECT a.id_association, a.nom_asso, af.solde
+        FROM Association a
+        JOIN Affectation af ON a.id_association = af.id_association
+        WHERE af.id_utilisateur = ?
+        AND af.id_role = 4
+    ");
+        $req->execute([$idUtilisateur]);
+        return $req->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    public function getAssociationsDisponibles($idUtilisateur) {
+        $req = self::$bdd->prepare("
+        SELECT * FROM Association
+        WHERE id_association NOT IN (
+            SELECT id_association FROM Affectation WHERE id_utilisateur = ?
+        )
+    ");
+        $req->execute([$idUtilisateur]);
+        return $req->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 
 
 

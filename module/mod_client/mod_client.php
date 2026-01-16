@@ -16,6 +16,15 @@ class ModClient {
             case 'accueil':
                 $this->controleur->accueil();
                 break;
+            case 'accueilAsso':
+                $this->controleur->accueilAsso();
+                break;
+            case 'mesAssociations':
+                $this->controleur->mesAssociations();
+                break;
+            case 'selectionAsso':
+                $this->controleur->selectionAsso();
+                break;
             case 'choisirAsso':
                 $this->controleur->choisirAsso();
                 break;

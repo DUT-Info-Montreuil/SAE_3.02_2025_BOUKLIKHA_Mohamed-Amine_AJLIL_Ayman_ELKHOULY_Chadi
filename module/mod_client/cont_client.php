@@ -13,30 +13,32 @@ class ContClient {
     }
 
     public function accueil() {
+        if ($_SESSION['id_role'] != 4) { echo "<p>Accès refusé</p>"; exit(); }
 
-        // Client = rôle 3 (exemple)
-        if (!isset($_SESSION['identifiant']) || $_SESSION['id_role'] != 4) {
-            echo "<p>Accès refusé</p>";
-            echo "<a href='index.php?module=connexion&action=form_connexion'>Connexion</a>";
-            exit();
+        $idUtilisateur = $_SESSION['id_utilisateur'];
+        $associations = $this->modele->getAssociationsClient($idUtilisateur);
+
+        $this->vue->afficherAccueil($associations);
+    }
+
+    public function accueilAsso() {
+        if ($_SESSION['id_role'] != 4 || !isset($_SESSION['id_association'])) {
+            $this->accueil(); // fallback
+            return;
         }
 
         $idUtilisateur = $_SESSION['id_utilisateur'];
+        $idAssociation = $_SESSION['id_association'];
 
-        $affectation = $this->modele->getAffectation($idUtilisateur);
+        $affectation = $this->modele->getAffectation($idUtilisateur, $idAssociation);
+        $solde = $affectation['solde'];
 
-        if (!$affectation) {
-            $this->vue->afficherAccueilSansAffecter();
-        } else {
-            $_SESSION['id_association'] = $affectation['id_association'];   // Validé
-            $solde = $affectation['solde'];
-            $this->vue->afficherAccueil($solde);
-        }
+        $asso = $this->modele->getAssociationParId($idAssociation);
 
-
-
-
+        $this->vue->afficherAccueilAsso($asso, $solde);
     }
+
+
 
     public function demanderCreationAsso() {
 
@@ -50,9 +52,14 @@ class ContClient {
             $nomAsso = $_POST['nom_asso'];
             $url = "https://www." . $nomAsso . ".fr";
 
-            $this->modele->creerDemandeAsso($_SESSION['id_utilisateur'], $_POST['nom_asso'], $_POST['adresse'], $_POST['contact'], $url);
-
-            echo "<p>Demande de création envoyée ⏳</p>";
+            // Vérification si l'association existe déjà
+            $existe = $this->modele->getAssoParNom($nomAsso);
+            if ($existe) {
+                echo "<p> Une association avec ce nom existe déjà ❌</p>";
+            } else {
+                $this->modele->creerDemandeAsso($_SESSION['id_utilisateur'], $nomAsso, $_POST['adresse'], $_POST['contact'], $url);
+                echo "<p>Demande de création envoyée ⏳</p>";
+            }
         }
 
         $this->vue->formDemandeCreationAsso();
@@ -60,22 +67,54 @@ class ContClient {
 
 
 
+
     public function choisirAsso() {
+        if ($_SESSION['id_role'] != 4) { echo "Accès refusé"; exit(); }
 
-        if ($_SESSION['id_role'] != 4) {
-            echo "Accès refusé";
-            exit();
-        }
+        $idUtilisateur = $_SESSION['id_utilisateur'];
 
-        // clic sur "demander"
         if (isset($_POST['id_association'])) {
-            $_SESSION['demande_association'] = $_POST['id_association'];
-            echo "<p>Demande envoyée. En attente de validation.</p>";
+            $idAsso = $_POST['id_association'];
+
+            // Vérifie si la demande existe déjà
+            if ($this->modele->demandeExiste($idUtilisateur, $idAsso)) {
+                echo "<p>Vous avez déjà demandé à rejoindre cette association ⏳</p>";
+            } else {
+                $this->modele->creerDemandeClient($idUtilisateur, $idAsso);
+                echo "<p>Demande envoyée. En attente de validation ✅</p>";
+            }
         }
 
-        $associations = $this->modele->getAssociations();
+        // Récupère les asso disponibles
+        $associations = $this->modele->getAssociationsDisponibles($idUtilisateur);
         $this->vue->afficherChoixAssociation($associations);
     }
+
+
+
+    public function mesAssociations() {
+        if ($_SESSION['id_role'] != 4) {
+            echo "<p>Accès refusé</p>"; exit();
+        }
+
+        $idUtilisateur = $_SESSION['id_utilisateur'];
+        $associations = $this->modele->getAssociationsClient($idUtilisateur);
+
+        $this->vue->afficherMesAssociations($associations);
+    }
+
+    public function selectionAsso() {
+        if ($_SESSION['id_role'] != 4 || !isset($_POST['id_association'])) {
+            echo "Accès refusé"; exit();
+        }
+
+        $_SESSION['id_association'] = $_POST['id_association'];
+
+        header("Location: index.php?module=client&action=accueilAsso");
+        exit();
+    }
+
+
 
 
     public function recharger() {

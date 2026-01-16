@@ -19,12 +19,6 @@ class ModAdmin {
             case 'accepterCreationAsso':
                 $this->controleur->accepterCreationAsso();
                 break;
-            case 'sites':
-                $this->controleur->sites();
-                break;
-            case 'validationClients':
-                $this->controleur->validationClients();
-                break;
             default:
                 $this->controleur->accueil();
                 break;

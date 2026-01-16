@@ -110,29 +110,24 @@ class ContGestionnaire {
     }
 
 
-    public function creerAsso() {
-
-        if (isset($_POST['nom_asso'])) {
-            if (!empty($_POST['nom_asso']) && !empty($_POST['adresse']) && !empty($_POST['contact']) && !empty($_POST['identifiant']) && !empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['mdp'])) {
-
-                $nomAsso = $_POST['nom_asso'];
-                $url = "https://www." . $nomAsso . ".fr";
-
-                $idAsso = $this->modele->creerAssociation($_POST['nom_asso'], $_POST['adresse'], $_POST['contact'], $url);
-
-                $idUser = $this->modele->creerGestionnaire($_POST['identifiant'], $_POST['nom'], $_POST['prenom'], $_POST['mdp']);
-
-                $this->modele->affecterGestionnaire($idUser, $idAsso, 2);  // 2 => Gestionnaire
-
-                echo "<p>Association créés avec succès</p>";
-
-            } else {
-                echo " <p>Champs manquants</p>";
-            }
+    public function validationClients() {
+        if ($_SESSION['id_role'] != 2) {
+            echo "Accès refusé";
+            exit();
         }
 
-        $this->vue->formCreationAssociation();
+        if (isset($_POST['id_demande']) && isset($_POST['valider'])) {
+            $this->modele->validerDemandeClient($_POST['id_demande']);
+            echo "<p>Demande acceptée ✅</p>";
+        }
+
+        // Ensuite on récupère toutes les demandes pour l'affichage
+        $idAssociation = $_SESSION['id_association']; // l'asso du gestionnaire
+        $demandes = $this->modele->getDemandesClients($idAssociation);
+
+        $this->vue->afficherValidationClients($demandes);
     }
+
 
     public function accueil() {
         if (!isset($_SESSION['identifiant']) || $_SESSION['id_role'] != 2) {
@@ -142,6 +137,17 @@ class ContGestionnaire {
 
         $this->vue->afficherAccueil();
     }
+
+
+    public function site() {
+        $idUtilisateur = $_SESSION['id_utilisateur'];
+        $association = $this->modele->getAssociationGestionnaire($idUtilisateur);
+        $this->vue->afficherSiteAssociation($association);
+    }
+
+
+
+
 
     public function getVue() {
         return $this->vue;
