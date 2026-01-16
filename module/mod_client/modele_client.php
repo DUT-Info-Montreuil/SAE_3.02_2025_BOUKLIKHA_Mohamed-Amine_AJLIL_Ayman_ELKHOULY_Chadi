@@ -59,6 +59,16 @@ class ModeleClient extends Connexion {
         return $req->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function quitterAssociation($idUtilisateur, $idAssociation) {
+        $req = self::$bdd->prepare("
+        DELETE FROM Affectation 
+        WHERE id_utilisateur = ? 
+        AND id_association = ?
+        AND id_role = 4
+    ");
+        $req->execute([$idUtilisateur, $idAssociation]);
+    }
+
 
 
 

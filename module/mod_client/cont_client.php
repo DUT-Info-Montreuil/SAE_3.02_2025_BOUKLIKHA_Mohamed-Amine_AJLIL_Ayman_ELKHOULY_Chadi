@@ -114,6 +114,26 @@ class ContClient {
         exit();
     }
 
+    public function quitterAsso() {
+        if (!isset($_SESSION['id_association']) || $_SESSION['id_role'] != 4) {
+            echo "Accès refusé";
+            exit();
+        }
+
+        $idUtilisateur = $_SESSION['id_utilisateur'];
+        $idAssociation = $_SESSION['id_association'];
+
+        $this->modele->quitterAssociation($idUtilisateur, $idAssociation);
+
+        // sort de l'association
+        unset($_SESSION['id_association']);
+
+        echo "<p>Vous avez quitté l’association ✅</p>";
+
+        // Retour accueil client global
+        $this->accueil();
+    }
+
 
 
 

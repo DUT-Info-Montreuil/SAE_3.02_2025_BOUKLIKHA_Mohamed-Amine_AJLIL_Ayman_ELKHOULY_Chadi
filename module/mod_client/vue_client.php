@@ -96,10 +96,13 @@ class VueClient extends VueGenerique {
         echo "<a href='index.php?module=client&action=recharger'>Recharger</a><br>";
         echo "<a href='index.php?module=client&action=historique'>Historique</a><br>";
         echo "<a href='index.php?module=client&action=qrcode'>QR Code</a><br>";
+        echo"<br>";
+        echo "<a href='index.php?module=client&action=mesAssociations'>Mes associations</a><br>";
+        echo " <br> ";
 
-        // Lien retour à l'accueil global
-        echo "<a href='index.php?module=client&action=accueil'>Retour à l'accueil</a><br>";
-        echo "<a href='index.php?module=connexion&action=deconnexion'>Déconnexion</a>";
+        echo "<form method='post' action='index.php?module=client&action=quitterAsso'>
+        <input type='submit' value='Quitter l’association'>
+      </form>";
         echo "</div>";
     }
 

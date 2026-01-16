@@ -31,6 +31,9 @@ class ModClient {
             case 'demanderCreationAsso':
                 $this->controleur->demanderCreationAsso();
                 break;
+            case 'quitterAsso':
+                $this->controleur->quitterAsso();
+                break;
             case 'recharger':
                 $this->controleur->recharger();
                 break;
