@@ -23,6 +23,25 @@ class VueClient extends VueGenerique {
         echo "</div>";
     }
 
+
+
+    public function formDemandeCreationAsso() {
+        echo "<div class='card'>";
+        echo "<h2>Faire une demande de création d'une association</h2>";
+
+        echo "<form method='post' action='index.php?module=client&action=demanderCreationAsso'>";
+
+        echo "<h3>Association</h3>";
+        echo "<label>Nom :</label> <input type='text' name='nom_asso'><br>";
+        echo "<label>Adresse :</label> <input type='text' name='adresse'><br>";
+        echo "<label>Téléphone :</label> <input type='text' name='contact'><br>";
+
+        echo "<input type='submit' value='Créer'>";
+
+        echo "</form>";
+        echo "</div>";
+    }
+
     public function afficherAccueilSansAffecter() {
 
         echo "<div class='card'>";
@@ -32,6 +51,7 @@ class VueClient extends VueGenerique {
 
         echo "<p>Vous devez rejoindre une association ou votre compte est en attente de validation.</p><br>";
         echo "<a href='index.php?module=client&action=choisirAsso'>Choisir une association </a><br>";
+        echo "<a href='index.php?module=client&action=demanderCreationAsso'>Créer votre association</a><br>";
         echo "<a href='index.php?module=connexion&action=deconnexion'>Déconnexion</a>";
         echo "</div>";
     }

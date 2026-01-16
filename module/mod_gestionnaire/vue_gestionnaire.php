@@ -61,6 +61,8 @@ class VueGestionnaire extends VueGenerique {
 
 
 
+
+
     public function afficherAccueil() {
         echo "<div class='card'>";
         echo "<h1>Bienvenue Gestionnaire " . htmlspecialchars($_SESSION['prenom']) . " " . htmlspecialchars($_SESSION['nom']) . "</h1>";

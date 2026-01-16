@@ -107,7 +107,32 @@ class ContGestionnaire {
             }
 
             $this->vue->formCreationProduit();
+    }
+
+
+    public function creerAsso() {
+
+        if (isset($_POST['nom_asso'])) {
+            if (!empty($_POST['nom_asso']) && !empty($_POST['adresse']) && !empty($_POST['contact']) && !empty($_POST['identifiant']) && !empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['mdp'])) {
+
+                $nomAsso = $_POST['nom_asso'];
+                $url = "https://www." . $nomAsso . ".fr";
+
+                $idAsso = $this->modele->creerAssociation($_POST['nom_asso'], $_POST['adresse'], $_POST['contact'], $url);
+
+                $idUser = $this->modele->creerGestionnaire($_POST['identifiant'], $_POST['nom'], $_POST['prenom'], $_POST['mdp']);
+
+                $this->modele->affecterGestionnaire($idUser, $idAsso, 2);  // 2 => Gestionnaire
+
+                echo "<p>Association créés avec succès</p>";
+
+            } else {
+                echo " <p>Champs manquants</p>";
+            }
         }
+
+        $this->vue->formCreationAssociation();
+    }
 
     public function accueil() {
         if (!isset($_SESSION['identifiant']) || $_SESSION['id_role'] != 2) {

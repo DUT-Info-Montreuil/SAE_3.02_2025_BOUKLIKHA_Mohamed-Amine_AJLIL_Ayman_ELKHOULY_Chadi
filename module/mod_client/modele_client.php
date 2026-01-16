@@ -18,6 +18,24 @@ class ModeleClient extends Connexion {
         return $req->fetch();
     }
 
+    public function creerAssociation($nom, $adresse, $contact, $url) {
+        $req = self::$bdd->prepare("
+        INSERT INTO Association (nom_asso, adresse, contact, url)
+        VALUES (?, ?, ?, ?)
+    ");
+        $req->execute([$nom, $adresse, $contact, $url]);
+    }
+
+    public function creerDemandeAsso($idUtilisateur, $nom, $adresse, $contact, $url) {
+        $req = self::$bdd->prepare("
+        INSERT INTO DemandeAssociation (id_utilisateur, nom_asso, adresse, contact, url)
+        VALUES (?, ?, ?, ?, ?)
+    ");
+        $req->execute([$idUtilisateur, $nom, $adresse, $contact, $url]);
+    }
+
+
+
     public function verifierMotDePasse($idUtilisateur, $mdp) {
         $req = self::$bdd->prepare("SELECT mdp FROM Utilisateur WHERE id_utilisateur = ?");
         $req->execute([$idUtilisateur]);

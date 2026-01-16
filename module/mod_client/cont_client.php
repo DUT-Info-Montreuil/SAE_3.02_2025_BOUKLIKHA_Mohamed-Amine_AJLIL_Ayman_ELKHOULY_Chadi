@@ -38,6 +38,28 @@ class ContClient {
 
     }
 
+    public function demanderCreationAsso() {
+
+        if ($_SESSION['id_role'] != 4) {
+            echo "Accès refusé";
+            exit();
+        }
+
+        if (!empty($_POST)) {
+
+            $nomAsso = $_POST['nom_asso'];
+            $url = "https://www." . $nomAsso . ".fr";
+
+            $this->modele->creerDemandeAsso($_SESSION['id_utilisateur'], $_POST['nom_asso'], $_POST['adresse'], $_POST['contact'], $url);
+
+            echo "<p>Demande de création envoyée ⏳</p>";
+        }
+
+        $this->vue->formDemandeCreationAsso();
+    }
+
+
+
     public function choisirAsso() {
 
         if ($_SESSION['id_role'] != 4) {

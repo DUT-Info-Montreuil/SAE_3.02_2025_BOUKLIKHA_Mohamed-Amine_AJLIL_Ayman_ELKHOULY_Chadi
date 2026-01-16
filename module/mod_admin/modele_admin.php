@@ -8,29 +8,47 @@ class ModeleAdmin extends Connexion {
         self::initConnexion();
     }
 
-
-    public function creerAssociation($nom_asso, $adresse, $contact, $url) {
-        $req = self::$bdd->prepare("INSERT INTO Association (nom_asso, adresse, contact, url) VALUES (?, ?, ?, ?)");
-        $req->execute([$nom_asso, $adresse, $contact, $url]);
-        return self::$bdd->lastInsertId();
-    }
-
     public function getAssociations() {
         $req = self::$bdd->prepare("SELECT * FROM Association");
         $req->execute();
         return $req->fetchAll();
     }
 
-    public function creerGestionnaire($identifiant, $nom, $prenom, $mdp) {
-        $hash = password_hash($mdp, PASSWORD_DEFAULT);
-        $req = self::$bdd->prepare("INSERT INTO Utilisateur (identifiant, nom, prenom, mdp, id_role) VALUES (?, ?, ?, ?, 2)");
-        $req->execute([$identifiant, $nom, $prenom, $hash]);
+    public function getDemandesAssociation() {
+        $req = self::$bdd->prepare("
+        SELECT d.*, u.nom AS nom_utilisateur, u.prenom AS prenom_utilisateur
+        FROM DemandeAssociation d
+        JOIN Utilisateur u ON d.id_utilisateur = u.id_utilisateur");
+        $req->execute();
+        return $req->fetchAll();
+    }
+
+    public function getDemandeParId($idDemande) {
+        $req = self::$bdd->prepare("SELECT * FROM DemandeAssociation WHERE id_demande = ?");
+        $req->execute([$idDemande]);
+        return $req->fetch();
+    }
+
+    public function creerAssociation($nom_asso, $adresse, $contact, $url) {
+        $req = self::$bdd->prepare("INSERT INTO Association (nom_asso, adresse, contact, url)VALUES (?, ?, ?, ?)");
+        $req->execute([$nom_asso, $adresse, $contact, $url]);
         return self::$bdd->lastInsertId();
     }
 
-    public function affecterGestionnaire($idUtilisateur, $idAssociation, $idRole) {
-        $req = self::$bdd->prepare("INSERT INTO Affectation (id_utilisateur, id_association, id_role, solde) VALUES (?, ?, ?, 0)");
-        $req->execute([$idUtilisateur, $idAssociation, $idRole]);
+
+    public function validerDemande($idDemande) {
+        $req = self::$bdd->prepare("DELETE FROM DemandeAssociation WHERE id_demande = ?");
+        $req->execute([$idDemande['id_demande']]);
+    }
+
+    public function validerGestionnaire($idUtilisateur, $idAssociation) {
+        // Changer le rôle du client en gestionnaire
+        $req = self::$bdd->prepare("UPDATE Utilisateur SET id_role = 2 WHERE id_utilisateur = ?");
+        $req->execute([$idUtilisateur]);
+
+        // Affecter à l'association
+        $req = self::$bdd->prepare("INSERT INTO Affectation (id_utilisateur, id_association, id_role, solde) VALUES (?, ?, 2, 0)");
+        $req->execute([$idUtilisateur, $idAssociation]);
     }
 
     public function getClientsSansAffectation() {
