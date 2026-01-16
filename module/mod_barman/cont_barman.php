@@ -22,6 +22,17 @@ class ContBarman {
         $this->vue->afficherAccueil();
     }
 
+    public function voirStock() {
+        if (!isset($_SESSION['identifiant']) || $_SESSION['id_role'] != 3) {
+            echo "<p>Accès refusé : vous devez être barman.</p>";
+            exit();
+        }
+
+        $stock = $this->modele->getStock();
+        $this->vue->afficherStock($stock);
+    }
+
+
     public function getVue() {
         return $this->vue;
     }
