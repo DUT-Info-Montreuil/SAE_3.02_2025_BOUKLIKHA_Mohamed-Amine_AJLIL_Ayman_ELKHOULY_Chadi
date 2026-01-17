@@ -103,6 +103,7 @@ class ContClient {
         $this->vue->afficherMesAssociations($associations);
     }
 
+
     public function selectionAsso() {
         if ($_SESSION['id_role'] != 4 || !isset($_POST['id_association'])) {
             echo "Accès refusé"; exit();
@@ -110,8 +111,7 @@ class ContClient {
 
         $_SESSION['id_association'] = $_POST['id_association'];
 
-        header("Location: index.php?module=client&action=accueilAsso");
-        exit();
+        $this->accueilAsso();
     }
 
     public function quitterAsso() {

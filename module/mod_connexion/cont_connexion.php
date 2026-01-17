@@ -80,11 +80,11 @@ class ContConnexion {
                 else if ($utilisateur['id_role'] == 2){
                     header("Location: index.php?module=gestionnaire"); // redirige vers page gestionnaire
                 }
-                else if ($utilisateur['id_role'] == 4){
-                    header("Location: index.php?module=client"); // redirige vers page client
-                }
                 else if ($utilisateur['id_role'] == 3){
                     header("Location: index.php?module=barman"); // redirige vers page barman
+                }
+                else if ($utilisateur['id_role'] == 4){
+                    header("Location: index.php?module=client"); // redirige vers page client
                 }
                 else {
                     echo "<p>Connexion réussie ! Bienvenue, <b>" . htmlspecialchars($utilisateur['prenom']) . " " . htmlspecialchars($utilisateur['nom']) .

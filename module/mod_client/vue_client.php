@@ -11,7 +11,7 @@ class VueClient extends VueGenerique {
 
     public function formDemandeCreationAsso() {
         echo "<div class='card'>";
-        echo "<h2>Faire une demande de création d'une association</h2>";
+        echo "<h2>Faire une demande pour créer votre association</h2>";
 
         echo "<form method='post' action='index.php?module=client&action=demanderCreationAsso'>";
 
@@ -77,7 +77,7 @@ class VueClient extends VueGenerique {
             foreach ($associations as $asso) {
                 echo "<form method='post' action='index.php?module=client&action=selectionAsso'>";
                 echo "<strong>" . htmlspecialchars($asso['nom_asso']) . "</strong> - Solde : " . htmlspecialchars($asso['solde']) . " €<br>";
-                echo "<input type='hidden' name='id_association' value='" . $asso['id_association'] . "'>";
+                echo "<input type='hidden' name='id_association' value='" . htmlspecialchars($asso['id_association']) . "'>";
                 echo "<input type='submit' value='Accéder à cette association'>";
                 echo "</form><hr>";
             }
@@ -101,8 +101,8 @@ class VueClient extends VueGenerique {
         echo " <br> ";
 
         echo "<form method='post' action='index.php?module=client&action=quitterAsso'>
-        <input type='submit' value='Quitter l’association'>
-      </form>";
+                <input type='submit' value='Quitter l’association'>
+              </form>";
         echo "</div>";
     }
 
@@ -110,10 +110,7 @@ class VueClient extends VueGenerique {
 
     public function afficherAccueil() {
         echo "<div class='card'>";
-        echo "<h1>Bienvenue "
-            . htmlspecialchars($_SESSION['prenom']) . " "
-            . htmlspecialchars($_SESSION['nom'])
-            . "</h1>";
+        echo "<h1>Bienvenue " . htmlspecialchars($_SESSION['prenom']) . " " . htmlspecialchars($_SESSION['nom']) . "</h1>";
 
         echo "<a href='index.php?module=client&action=mesAssociations'>Mes associations</a><br>";
         echo "<a href='index.php?module=client&action=choisirAsso'>Choisir une association</a><br>";
@@ -121,7 +118,6 @@ class VueClient extends VueGenerique {
         echo "<a href='index.php?module=connexion&action=deconnexion'>Déconnexion</a>";
         echo "</div>";
     }
-
 
 
 
