@@ -35,6 +35,11 @@ class ModeleClient extends Connexion {
         return $req->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function supprimerDemandeAssoClient($idUtilisateur) {
+        $req = self::$bdd->prepare("DELETE FROM DemandeAssociation WHERE id_utilisateur = ?");
+        $req->execute([$idUtilisateur]);
+    }
+
 
 
 

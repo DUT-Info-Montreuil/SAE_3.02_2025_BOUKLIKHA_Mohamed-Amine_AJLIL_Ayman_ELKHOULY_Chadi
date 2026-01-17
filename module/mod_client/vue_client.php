@@ -12,6 +12,7 @@ class VueClient extends VueGenerique {
     public function formDemandeCreationAsso() {
         echo "<div class='card'>";
         echo "<h2>Faire une demande pour créer votre association</h2>";
+        echo "<p>Seule la dernière demande de création d’association est conservée tant qu’aucune validation n’a été effectuée.</p><br>   ";
 
         echo "<form method='post' action='index.php?module=client&action=demanderCreationAsso'>";
 

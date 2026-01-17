@@ -57,6 +57,8 @@ class ContClient {
             if ($existe) {
                 echo "<p> Une association avec ce nom existe déjà ❌</p>";
             } else {
+                $this->modele->supprimerDemandeAssoClient($_SESSION['id_utilisateur']); // supp si une demande deja faite
+
                 $this->modele->creerDemandeAsso($_SESSION['id_utilisateur'], $nomAsso, $_POST['adresse'], $_POST['contact'], $url);
                 echo "<p>Demande de création envoyée ⏳</p>";
             }
@@ -64,8 +66,6 @@ class ContClient {
 
         $this->vue->formDemandeCreationAsso();
     }
-
-
 
 
     public function choisirAsso() {
@@ -91,7 +91,6 @@ class ContClient {
     }
 
 
-
     public function mesAssociations() {
         if ($_SESSION['id_role'] != 4) {
             echo "<p>Accès refusé</p>"; exit();
@@ -113,6 +112,7 @@ class ContClient {
 
         $this->accueilAsso();
     }
+
 
     public function quitterAsso() {
         if (!isset($_SESSION['id_association']) || $_SESSION['id_role'] != 4) {
