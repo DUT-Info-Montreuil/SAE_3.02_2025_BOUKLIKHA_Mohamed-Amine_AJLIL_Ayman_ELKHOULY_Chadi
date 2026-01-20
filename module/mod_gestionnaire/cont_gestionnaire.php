@@ -109,30 +109,69 @@ class ContGestionnaire {
             $this->vue->formCreationProduit();
     }
 
+    public function acheterProduit() {
+        $produits = $this->modele->getProduits();
+        $fournisseurs = $this->modele->getFournisseurs();
 
-    public function creerAsso() {
-
-        if (isset($_POST['nom_asso'])) {
-            if (!empty($_POST['nom_asso']) && !empty($_POST['adresse']) && !empty($_POST['contact']) && !empty($_POST['identifiant']) && !empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['mdp'])) {
-
-                $nomAsso = $_POST['nom_asso'];
-                $url = "https://www." . $nomAsso . ".fr";
-
-                $idAsso = $this->modele->creerAssociation($_POST['nom_asso'], $_POST['adresse'], $_POST['contact'], $url);
-
-                $idUser = $this->modele->creerGestionnaire($_POST['identifiant'], $_POST['nom'], $_POST['prenom'], $_POST['mdp']);
-
-                $this->modele->affecterGestionnaire($idUser, $idAsso, 2);  // 2 => Gestionnaire
-
-                echo "<p>Association créés avec succès</p>";
-
-            } else {
-                echo " <p>Champs manquants</p>";
+        // Préparer panier à envoyer à la vue
+        $panierAffichage = [];
+        if (!empty($_SESSION['panier'])) {
+            foreach ($_SESSION['panier'] as $key => $item) {
+                $produit = $this->modele->getProduitParId($item['id_produit']);
+                $panierAffichage[$key] = ['nom' => $produit['nom'], 'prix' => $produit['prix'], 'quantite' => $item['quantite']];
             }
         }
-
-        $this->vue->formCreationAssociation();
+        $this->vue->formAchat($produits, $fournisseurs, $panierAffichage);
     }
+
+    public function ajouterAuPanier() {
+        if (!isset($_SESSION['panier'])) $_SESSION['panier'] = [];
+        $key = $_POST['id_produit'].'_'.$_POST['id_fournisseur'];
+
+        if (isset($_SESSION['panier'][$key])) {
+            $_SESSION['panier'][$key]['quantite'] += (int)$_POST['quantite'];
+        } else {
+            $_SESSION['panier'][$key] = ['id_produit' => $_POST['id_produit'], 'id_fournisseur' => $_POST['id_fournisseur'], 'quantite' => (int)$_POST['quantite']];
+        }
+        $this->acheterProduit();
+    }
+
+    public function supprimerDuPanier() {
+        if (isset($_POST['key']) && isset($_SESSION['panier'][$_POST['key']])) {
+            unset($_SESSION['panier'][$_POST['key']]);
+            echo "<p>Article supprimé du panier ✅</p>";
+        }
+        $this->acheterProduit();
+    }
+
+
+    public function validerPanier() {
+        if (empty($_SESSION['panier'])) {
+            echo "<p>Panier vide.</p>";
+            $this->acheterProduit();
+            return;
+        }
+
+        $idAsso = $this->modele->getAssociationGestionnaire($_SESSION['id_utilisateur']);
+        $total = 0;
+
+        foreach ($_SESSION['panier'] as $item) {
+            $produit = $this->modele->getProduitParId($item['id_produit']);
+            $total += $produit['prix'] * $item['quantite'];
+        }
+
+        $idAchat = $this->modele->creerAchat($idAsso, $total);
+
+        foreach ($_SESSION['panier'] as $item) {
+            $prixUnitaire = $this->modele->getPrixUnitaire($item['id_produit']);
+            $this->modele->ajouterDetailAchat($idAchat, $item['id_produit'], $item['quantite'], $prixUnitaire);
+        }
+
+        unset($_SESSION['panier']);
+        echo "<p>Achat validé ✅</p>";
+        $this->acheterProduit();
+    }
+
 
     public function accueil() {
         if (!isset($_SESSION['identifiant']) || $_SESSION['id_role'] != 2) {

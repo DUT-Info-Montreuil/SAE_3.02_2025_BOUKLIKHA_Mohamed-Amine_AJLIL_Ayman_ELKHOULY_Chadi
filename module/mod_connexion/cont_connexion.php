@@ -63,11 +63,15 @@ class ContConnexion {
             $hash = $utilisateur['mdp'];
 
             if (isset($utilisateur) && password_verify($mdp, $hash)) {
+                $asso = $this->modele->getAssociationUtilisateur($id_utilisateur);
                 $_SESSION['id_utilisateur'] = $id_utilisateur;
                 $_SESSION['identifiant'] = $identifiant;
                 $_SESSION['nom'] = $utilisateur['nom'];
                 $_SESSION['prenom'] = $utilisateur['prenom'];
                 $_SESSION['id_role'] = $utilisateur['id_role'];
+                if ($asso) {
+                    $_SESSION['id_association'] = $asso['id_association'];
+                }
                 if ($utilisateur['id_role'] == 1) {
                     header("Location: index.php?module=admin"); // redirige vers page admin
                 }

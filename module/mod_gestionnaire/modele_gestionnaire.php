@@ -8,17 +8,6 @@ class ModeleGestionnaire extends Connexion {
         self::initConnexion();
     }
 
-    public function creerAssociation($nom_asso, $adresse, $contact, $url) {
-        $req = self::$bdd->prepare("INSERT INTO Association (nom_asso, adresse, contact, url) VALUES (?, ?, ?, ?)");
-        $req->execute([$nom_asso, $adresse, $contact, $url]);
-        return self::$bdd->lastInsertId();
-    }
-
-    public function affecterGestionnaire($idUtilisateur, $idAssociation, $idRole) {
-        $req = self::$bdd->prepare("INSERT INTO Affectation (id_utilisateur, id_association, id_role, solde) VALUES (?, ?, ?, 0)");
-        $req->execute([$idUtilisateur, $idAssociation, $idRole]);
-    }
-
     public function creerBarman($identifiant, $nom, $prenom, $mdp) {
         $hash = password_hash($mdp, PASSWORD_DEFAULT);
         $req = self::$bdd->prepare("INSERT INTO Utilisateur (identifiant, nom, prenom, mdp, id_role) VALUES (?, ?, ?, ?, 3)");
@@ -49,6 +38,55 @@ class ModeleGestionnaire extends Connexion {
         $req->execute([$nom]);
         return $req->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function getProduits() {
+        $req = self::$bdd->prepare("SELECT * FROM Produit");
+        $req->execute();
+        return $req->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getFournisseurs() {
+        $req = self::$bdd->prepare("SELECT * FROM Fournisseur");
+        $req->execute();
+        return $req->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    public function getProduitParId($idProduit) {
+        $req = self::$bdd->prepare("SELECT * FROM Produit WHERE id_produit = ?");
+        $req->execute([$idProduit]);
+        return $req->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function creerAchat($idAssociation, $total) {
+        $req = self::$bdd->prepare("INSERT INTO Achat (date_achat, montant_total, id_association) VALUES (NOW(), ?, ?)");
+        $req->execute([$total, $idAssociation]);
+        return self::$bdd->lastInsertId();
+    }
+
+    public function ajouterDetailAchat($idAchat, $idProduit, $quantite, $prixUnitaire) {
+        // Calculer le prix total de cet item
+        $prixTotal = $quantite * $prixUnitaire;
+
+        // Insérer le détail de l'achat
+        $req = self::$bdd->prepare("INSERT INTO detailAchat (id_achat, id_produit, quantite, prix_achat)VALUES (?, ?, ?, ?)");
+        $req->execute([$idAchat, $idProduit, $quantite, $prixTotal]);
+    }
+
+    public function getPrixUnitaire($idProduit) {
+        $req = self::$bdd->prepare("SELECT prix FROM Produit WHERE id_produit = ?");
+        $req->execute([$idProduit]);
+        return $req->fetchColumn();
+    }
+
+
+
+    public function getAssociationGestionnaire($idUtilisateur) {
+        $req = self::$bdd->prepare("SELECT id_association FROM Affectation WHERE id_utilisateur = ?");
+        $req->execute([$idUtilisateur]);
+        return $req->fetchColumn();
+    }
+
 
 
 
