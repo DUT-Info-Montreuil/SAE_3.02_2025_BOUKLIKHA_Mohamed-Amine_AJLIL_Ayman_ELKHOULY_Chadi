@@ -4,6 +4,9 @@ include_once "module/vue_generique.php";
 
 class VueBarman extends VueGenerique {
 
+    public function __construct() {
+        parent::__construct();
+    }
 
     public function afficherStock($stock) {
         echo "<h2>📦 Stock actuel</h2>";

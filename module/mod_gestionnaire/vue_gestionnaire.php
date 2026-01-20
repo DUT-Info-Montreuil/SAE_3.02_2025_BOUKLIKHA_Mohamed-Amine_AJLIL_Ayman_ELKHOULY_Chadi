@@ -4,6 +4,10 @@ include_once "module/vue_generique.php";
 
 class VueGestionnaire extends VueGenerique {
 
+    public function __construct() {
+        parent::__construct();
+    }
+
 
 
     public function afficherValidationClients($demandes) {
@@ -41,8 +45,6 @@ class VueGestionnaire extends VueGenerique {
 
         echo "</div>";
     }
-
-
 
 
 
@@ -103,6 +105,42 @@ class VueGestionnaire extends VueGenerique {
     }
 
 
+    public function formInventaire($produits, $contenu, $inventaireEnCours = false) {
+    echo "<div class='card'><h2>Inventaire</h2>";
+
+    // Formulaire Ajouter / Modifier
+    echo "<form method='post'>";
+    echo "<select name='id_produit'>";
+    foreach ($produits as $p) {
+        echo "<option value='". htmlspecialchars($p['id_produit']) . "'>" . htmlspecialchars($p['nom']) . "</option>";
+    }
+    echo "</select> ";
+    echo "<input type='number' min='0' name='quantite' required>";
+    echo "<input type='submit' name='ajouter' value='Ajouter / Modifier'>";
+    echo "</form>";
+
+    echo "<br>";
+
+    // Liste produits
+    if (!empty($contenu)) {
+        echo "<h3>Produits dans l’inventaire</h3><ul>";
+        foreach ($contenu as $ligne) {
+            echo "<li>" . htmlspecialchars($ligne['nom']) . " : " . htmlspecialchars($ligne['quantite']) . "</li>";
+        }
+        echo "</ul>";
+    }
+
+        echo "</div>";
+    }
+
+
+    public function boutonCreerInventaire() {
+        echo "<div class='card'><h2>Inventaire inexistant</h2>";
+        echo "<form method='post'>";
+        echo "<input type='submit' name='creer' value='Créer l’inventaire'>";
+        echo "</form></div>";
+    }
+
 
 
     public function afficherAccueil() {
@@ -114,6 +152,7 @@ class VueGestionnaire extends VueGenerique {
         echo "<a href='index.php?module=gestionnaire&action=creerBarman'>👤 Créer un barman</a><br><br>";
         echo "<a href='index.php?module=gestionnaire&action=creerFournisseur'>📦 Créer un fournisseur</a><br><br>";
         echo "<a href='index.php?module=gestionnaire&action=creerProduit'>🍾 Créer un produit</a><br><br>";
+        echo "<a href='index.php?module=gestionnaire&action=inventaire'>📊 Gérer l'inventaire</a><br><br>";
         echo "<a href='index.php?module=connexion&action=deconnexion'>🚪 Déconnexion</a>";
         echo "</div>";
     }

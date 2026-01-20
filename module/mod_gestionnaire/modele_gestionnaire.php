@@ -15,9 +15,7 @@ class ModeleGestionnaire extends Connexion {
     }
 
     public function getAssociationGestionnaire($idUtilisateur) {
-        $req = self::$bdd->prepare("SELECT a.id_association, a.nom_asso, a.url FROM Association a
-                                    JOIN Affectation af ON a.id_association = af.id_association
-                                    WHERE af.id_utilisateur = ? AND af.id_role = 2");
+        $req = self::$bdd->prepare("SELECT a.id_association, a.nom_asso, a.url FROM Association a JOIN Affectation af ON a.id_association = af.id_association WHERE af.id_utilisateur = ? AND af.id_role = 2");
         $req->execute([$idUtilisateur]);
         return $req->fetch(PDO::FETCH_ASSOC);
     }
@@ -25,12 +23,7 @@ class ModeleGestionnaire extends Connexion {
 
 
     public function getDemandesClients($idAssociation) {
-        $req = self::$bdd->prepare("
-        SELECT dc.*, u.nom, u.prenom
-        FROM DemandeClient dc
-        JOIN Utilisateur u ON dc.id_utilisateur = u.id_utilisateur
-        WHERE dc.id_association = ?
-    ");
+        $req = self::$bdd->prepare("SELECT dc.*, u.nom, u.prenom FROM DemandeClient dc JOIN Utilisateur u ON dc.id_utilisateur = u.id_utilisateur WHERE dc.id_association = ?");
         $req->execute([$idAssociation]);
         return $req->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -38,18 +31,13 @@ class ModeleGestionnaire extends Connexion {
 
     public function validerDemandeClient($idDemande) {
         // Récupère id_utilisateur et id_association
-        $req = self::$bdd->prepare("
-        SELECT * FROM DemandeClient WHERE id_demande = ?
-    ");
+        $req = self::$bdd->prepare("SELECT * FROM DemandeClient WHERE id_demande = ?");
         $req->execute([$idDemande]);
         $demande = $req->fetch(PDO::FETCH_ASSOC);
 
         if ($demande) {
             // Ajouter dans Affectation
-            $req2 = self::$bdd->prepare("
-            INSERT INTO Affectation (id_utilisateur, id_association, id_role, solde)
-            VALUES (?, ?, 4, 0)
-        ");
+            $req2 = self::$bdd->prepare("INSERT INTO Affectation (id_utilisateur, id_association, id_role, solde) VALUES (?, ?, 4, 0)");
             $req2->execute([$demande['id_utilisateur'], $demande['id_association']]);
 
             // Supprimer la demande
@@ -102,6 +90,51 @@ class ModeleGestionnaire extends Connexion {
         $req = self::$bdd->prepare("INSERT INTO Affectation (id_utilisateur, id_association, id_role, solde) VALUES (?, ?, 3, 0)");
         $req->execute([$idUtilisateur, $idAssociation]);
     }
+
+
+
+    /* ================= INVENTAIRE ================= */
+
+    // Récupérer inventaire ou null si pas créé
+    public function getInventaireAssoc($idAssociation) {
+        $req = self::$bdd->prepare("SELECT id_inventaire FROM Inventaire WHERE id_association = ?");
+        $req->execute([$idAssociation]);
+        $inv = $req->fetch(PDO::FETCH_ASSOC);
+        if ($inv) {
+            return $inv['id_inventaire'];
+        } else {
+            return null;
+        }
+    }
+
+    // Créer inventaire
+    public function creerInventaire($idAssociation) {
+        $req = self::$bdd->prepare("INSERT INTO Inventaire (date_inventaire, id_association) VALUES (NOW(), ?)");
+        $req->execute([$idAssociation]);
+        return self::$bdd->lastInsertId();
+    }
+
+    public function upsertContient($idInventaire, $idProduit, $quantite) {
+        if (!$idProduit) return; // sécurité
+        $req = self::$bdd->prepare("INSERT INTO Contient (id_inventaire, id_produit, quantite_inventaire) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE quantite_inventaire = ?");
+        $req->execute([$idInventaire, $idProduit, $quantite, $quantite]);
+    }
+
+    public function getTousLesProduits() {
+        $req = self::$bdd->prepare("SELECT id_produit, nom FROM Produit");
+        $req->execute();
+        return $req->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getContenuInventaire($idInventaire) {
+        $req = self::$bdd->prepare("SELECT p.nom, c.quantite_inventaire AS quantite FROM Contient c JOIN Produit p ON c.id_produit = p.id_produit WHERE c.id_inventaire = ?");
+        $req->execute([$idInventaire]);
+        return $req->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+
+
 }
 
 

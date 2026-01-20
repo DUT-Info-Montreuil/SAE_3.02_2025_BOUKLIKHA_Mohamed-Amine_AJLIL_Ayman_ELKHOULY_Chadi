@@ -147,6 +147,37 @@ class ContGestionnaire {
 
 
 
+    public function gererInventaire() {
+        $idAssoc = $_SESSION['id_association'];
+        $idInventaire = $this->modele->getInventaireAssoc($idAssoc);
+
+        // Si aucun inventaire → afficher bouton créer
+        if (!$idInventaire) {
+            if (isset($_POST['creer'])) {
+                $idInventaire = $this->modele->creerInventaire($idAssoc);
+                echo "<p>Inventaire créé ✅</p>";
+            }
+            $this->vue->boutonCreerInventaire();
+            return;
+        }
+
+        // Ajouter / modifier un produit
+        if (isset($_POST['ajouter'])) {
+            $idProduit = $_POST['id_produit'] ?? null;
+            $quantite = $_POST['quantite'] ?? 0;
+            if ($idProduit !== null) {
+                $this->modele->upsertContient($idInventaire, $idProduit, $quantite);
+                echo "<p>Produit ajouté / modifié ✅</p>";
+            }
+        }
+
+        $produits = $this->modele->getTousLesProduits();
+        $contenu = $this->modele->getContenuInventaire($idInventaire);
+
+        $this->vue->formInventaire($produits, $contenu, true);
+    }
+
+
 
 
     public function getVue() {
