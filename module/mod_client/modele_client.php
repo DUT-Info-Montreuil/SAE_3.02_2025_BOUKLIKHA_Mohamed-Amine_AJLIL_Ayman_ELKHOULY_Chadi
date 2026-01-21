@@ -12,8 +12,7 @@ class ModeleClient extends Connexion {
 
 
     public function getSolde($idUtilisateur, $idAssociation) {
-        $req = self::$bdd->prepare(" SELECT solde FROM Affectation WHERE id_utilisateur = ? AND id_association = ?
-        ");
+        $req = self::$bdd->prepare(" SELECT solde FROM Affectation WHERE id_utilisateur = ? AND id_association = ?");
         $req->execute([$idUtilisateur, $idAssociation]);
         return $req->fetch();
     }
@@ -26,10 +25,7 @@ class ModeleClient extends Connexion {
 
 
     public function creerDemandeAsso($idUtilisateur, $nom, $adresse, $contact, $url) {
-        $req = self::$bdd->prepare("
-        INSERT INTO DemandeAssociation (id_utilisateur, nom_asso, adresse, contact, url)
-        VALUES (?, ?, ?, ?, ?)
-    ");
+        $req = self::$bdd->prepare("INSERT INTO DemandeAssociation (id_utilisateur, nom_asso, adresse, contact, url)VALUES (?, ?, ?, ?, ?)");
         $req->execute([$idUtilisateur, $nom, $adresse, $contact, $url]);
     }
 
@@ -39,24 +35,29 @@ class ModeleClient extends Connexion {
         return $req->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function supprimerDemandeAssoClient($idUtilisateur) {
+        $req = self::$bdd->prepare("DELETE FROM DemandeAssociation WHERE id_utilisateur = ?");
+        $req->execute([$idUtilisateur]);
+    }
+
 
 
 
     public function creerDemandeClient($idUtilisateur, $idAssociation) {
-        $req = self::$bdd->prepare("
-        INSERT INTO DemandeClient (id_utilisateur, id_association)
-        VALUES (?, ?)
-    ");
+        $req = self::$bdd->prepare("INSERT INTO DemandeClient (id_utilisateur, id_association) VALUES (?, ?)");
         $req->execute([$idUtilisateur, $idAssociation]);
     }
 
 
     public function demandeExiste($idUtilisateur, $idAssociation) {
-        $req = self::$bdd->prepare("SELECT * FROM DemandeClient 
-                                    WHERE id_utilisateur = ? AND id_association = ?
-    ");
+        $req = self::$bdd->prepare("SELECT * FROM DemandeClient WHERE id_utilisateur = ? AND id_association = ?");
         $req->execute([$idUtilisateur, $idAssociation]);
         return $req->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function quitterAssociation($idUtilisateur, $idAssociation) {
+        $req = self::$bdd->prepare("DELETE FROM Affectation WHERE id_utilisateur = ? AND id_association = ? AND id_role = 4");
+        $req->execute([$idUtilisateur, $idAssociation]);
     }
 
 
@@ -90,25 +91,15 @@ class ModeleClient extends Connexion {
 
 
     public function getAssociationsClient($idUtilisateur) {
-        $req = self::$bdd->prepare("
-        SELECT a.id_association, a.nom_asso, af.solde
-        FROM Association a
-        JOIN Affectation af ON a.id_association = af.id_association
-        WHERE af.id_utilisateur = ?
-        AND af.id_role = 4
-    ");
+        $req = self::$bdd->prepare("SELECT a.id_association, a.nom_asso, af.solde FROM Association a JOIN Affectation af ON a.id_association = af.id_association
+                                    WHERE af.id_utilisateur = ? AND af.id_role = 4");
         $req->execute([$idUtilisateur]);
         return $req->fetchAll(PDO::FETCH_ASSOC);
     }
 
 
     public function getAssociationsDisponibles($idUtilisateur) {
-        $req = self::$bdd->prepare("
-        SELECT * FROM Association
-        WHERE id_association NOT IN (
-            SELECT id_association FROM Affectation WHERE id_utilisateur = ?
-        )
-    ");
+        $req = self::$bdd->prepare("SELECT * FROM Association WHERE id_association NOT IN (SELECT id_association FROM Affectation WHERE id_utilisateur = ?)");
         $req->execute([$idUtilisateur]);
         return $req->fetchAll(PDO::FETCH_ASSOC);
     }
