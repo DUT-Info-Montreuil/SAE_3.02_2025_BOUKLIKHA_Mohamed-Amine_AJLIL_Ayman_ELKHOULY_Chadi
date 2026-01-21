@@ -220,7 +220,7 @@ class ContGestionnaire {
 
     public function site() {
         $idUtilisateur = $_SESSION['id_utilisateur'];
-        $association = $this->modele->getAssociationGestionnaire($idUtilisateur);
+        $association = $this->modele->getAssociationGestionnaireURL($idUtilisateur);
         $this->vue->afficherSiteAssociation($association);
     }
 
