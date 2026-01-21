@@ -110,6 +110,15 @@ class VueGestionnaire extends VueGenerique {
         echo "</div>";
     }
 
+    public function afficherSolde($solde) {
+        echo "<div class='card'>";
+        echo "<h2>Solde de l'association</h2>";
+        echo "<p><strong>Solde actuel : " . number_format($solde, 2) . " €</strong></p>";
+        echo "<a href='index.php?module=gestionnaire&action=accueil'>⬅ Retour</a>";
+        echo "</div>";
+    }
+
+
 
     public function afficherAccueil() {
         echo "<div class='card'>";
@@ -118,6 +127,7 @@ class VueGestionnaire extends VueGenerique {
         echo "<a href='index.php?module=gestionnaire&action=creerBarman'>👤 Créer un barman</a><br><br>";
         echo "<a href='index.php?module=gestionnaire&action=creerFournisseur'>📦 Créer un fournisseur</a><br><br>";
         echo "<a href='index.php?module=gestionnaire&action=creerProduit'>🍾 Créer un produit</a><br><br>";
+        echo "<a href='index.php?module=gestionnaire&action=voirSolde'>💰 Consulter le solde de l'association</a><br><br>";
         echo "<a href='index.php?module=gestionnaire&action=acheterProduit'>🛒 Acheter des produits</a><br><br>";
         echo "<a href='index.php?module=connexion&action=deconnexion'>🚪 Déconnexion</a>";
         echo "</div>";

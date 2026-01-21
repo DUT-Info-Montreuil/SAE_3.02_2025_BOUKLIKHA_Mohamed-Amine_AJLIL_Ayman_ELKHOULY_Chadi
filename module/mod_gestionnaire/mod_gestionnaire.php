@@ -45,6 +45,11 @@ class ModGestionnaire {
                 $this->controleur->validerPanier();
                 break;
 
+            case 'voirSolde':
+                $this->controleur->voirSolde();
+                break;
+
+
 
             default:
                 $this->controleur->accueil();

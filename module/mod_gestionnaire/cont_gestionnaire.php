@@ -144,6 +144,14 @@ class ContGestionnaire {
         $this->acheterProduit();
     }
 
+    public function voirSolde() {
+        $idUtilisateur = $_SESSION['id_utilisateur'];
+        $solde = $this->modele->getSoldeGestionnaire($idUtilisateur);
+
+        $this->vue->afficherSolde($solde);
+    }
+
+
 
     public function validerPanier() {
         if (empty($_SESSION['panier'])) {
@@ -152,6 +160,7 @@ class ContGestionnaire {
             return;
         }
 
+        $idUtilisateur = $_SESSION['id_utilisateur'];
         $idAsso = $this->modele->getAssociationGestionnaire($_SESSION['id_utilisateur']);
         $total = 0;
 
@@ -160,6 +169,14 @@ class ContGestionnaire {
             $total += $produit['prix'] * $item['quantite'];
         }
 
+        $solde = $this->modele->getSoldeGestionnaire($idUtilisateur);
+        if ($total > $solde) {
+            echo "<p>❌ Solde insuffisant. Solde : " . number_format($solde,2) . " €</p>";
+            $this->acheterProduit();
+            return;
+        }
+
+        $this->modele->debiterSolde($idUtilisateur, $total);
         $idAchat = $this->modele->creerAchat($idAsso, $total);
 
         foreach ($_SESSION['panier'] as $item) {
@@ -168,7 +185,7 @@ class ContGestionnaire {
         }
 
         unset($_SESSION['panier']);
-        echo "<p>Achat validé ✅</p>";
+        echo "<p>✅ Achat validé. Nouveau solde : " . number_format($solde - $total,2) . " €</p>";
         $this->acheterProduit();
     }
 
