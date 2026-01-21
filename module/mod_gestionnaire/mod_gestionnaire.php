@@ -35,12 +35,6 @@ class ModGestionnaire {
             case 'inventaire':
                 $this->controleur->gererInventaire();
                 break;
-            case 'historiqueInventaire':
-                $this->controleur->historiqueInventaire();
-                break;
-            case 'voirInventaire':
-                $this->controleur->voirInventaire();
-                break;
             default:
                 $this->controleur->accueil();
                 break;
