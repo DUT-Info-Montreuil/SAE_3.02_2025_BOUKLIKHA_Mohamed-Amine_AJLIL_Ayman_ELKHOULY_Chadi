@@ -14,7 +14,7 @@ class ModeleGestionnaire extends Connexion {
         return $req->fetchAll();
     }
 
-    public function getAssociationGestionnaire($idUtilisateur) {
+    public function getAssociationGestionnaireURL($idUtilisateur) {
         $req = self::$bdd->prepare("SELECT a.id_association, a.nom_asso, a.url FROM Association a JOIN Affectation af ON a.id_association = af.id_association WHERE af.id_utilisateur = ? AND af.id_role = 2");
         $req->execute([$idUtilisateur]);
         return $req->fetch(PDO::FETCH_ASSOC);
