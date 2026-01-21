@@ -198,6 +198,12 @@ class ModeleGestionnaire extends Connexion {
         return $req->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // + quand on achète
+    public function ajouterStock($idInventaire, $idProduit, $quantite) {
+        $req = self::$bdd->prepare("INSERT INTO Contient (id_inventaire, id_produit, quantite_inventaire) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE quantite_inventaire = quantite_inventaire + ?");
+        $req->execute([$idInventaire, $idProduit, $quantite, $quantite]);
+    }
+
 
 
 

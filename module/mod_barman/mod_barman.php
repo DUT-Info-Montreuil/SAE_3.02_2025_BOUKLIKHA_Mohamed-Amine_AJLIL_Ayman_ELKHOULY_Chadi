@@ -20,6 +20,13 @@ class ModBarman {
             case 'voirStock':
                 $this->controleur->voirStock();
                 break;
+            case 'gestionVentes':
+                $this->controleur->gestionDemandes();
+                break;
+            case 'validerDemande':
+                $this->controleur->validerDemande();
+                break;
+
             default:
                 $this->controleur->accueil();
                 break;

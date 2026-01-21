@@ -134,6 +134,21 @@ class ContClient {
         $this->accueil();
     }
 
+    public function mesDemandesAchat() {
+        if ($_SESSION['id_role'] != 4 || !isset($_SESSION['id_association'])) {
+            echo "<p>Accès refusé</p>";
+            return;
+        }
+
+        $idUtilisateur = $_SESSION['id_utilisateur'];
+        $idAssociation = $_SESSION['id_association'];
+
+        $demandes = $this->modele->getDemandesAchatClient($idUtilisateur, $idAssociation);
+
+        $this->vue->afficherMesDemandesAchat($demandes);
+    }
+
+
 
 
 
@@ -174,6 +189,89 @@ class ContClient {
 
         $this->vue->formRecharger();
     }
+
+    public function acheter() {
+        if ($_SESSION['id_role'] != 4 || !isset($_SESSION['id_association'])) {
+            echo "Accès refusé";
+            return;
+        }
+
+        $idAsso = $_SESSION['id_association'];
+        $produits = $this->modele->getProduitsDisponibles($idAsso);
+
+        $panierAffichage = [];
+        if (!empty($_SESSION['panier_client'])) {
+            foreach ($_SESSION['panier_client'] as $key => $item) {
+                $panierAffichage[$key] = $item;
+            }
+        }
+
+        $this->vue->formAchatClient($produits, $panierAffichage);
+    }
+
+
+    public function ajouterAuPanierClient() {
+        if (!isset($_SESSION['panier_client'])) $_SESSION['panier_client'] = [];
+
+        $idProduit = $_POST['id_produit'];
+        $quantite = (int)$_POST['quantite'];
+
+        $produit = $this->modele->getProduitParId($idProduit);
+
+        if (isset($_SESSION['panier_client'][$idProduit])) {
+            $_SESSION['panier_client'][$idProduit]['quantite'] += $quantite;
+        } else {
+            $_SESSION['panier_client'][$idProduit] = [
+                'id_produit' => $idProduit,
+                'nom' => $produit['nom'],
+                'prix' => $produit['prix'],
+                'quantite' => $quantite
+            ];
+        }
+
+        $this->acheter();
+    }
+
+    public function supprimerDuPanierClient() {
+        if (isset($_POST['key'])) {
+            unset($_SESSION['panier_client'][$_POST['key']]);
+        }
+        $this->acheter();
+    }
+
+
+    public function validerPanierClient() {
+        if (empty($_SESSION['panier_client'])) {
+            echo "<p>Panier vide</p>";
+            $this->acheter();
+            return;
+        }
+
+        $idUtilisateur = $_SESSION['id_utilisateur'];
+        $idAsso = $_SESSION['id_association'];
+
+        $total = 0;
+        foreach ($_SESSION['panier_client'] as $item) {
+            $total += $item['prix'] * $item['quantite'];
+        }
+
+        $solde = $this->modele->getSolde($idUtilisateur, $idAsso)['solde'];
+
+        if ($total > $solde) {
+            echo "<p>❌ Solde insuffisant</p>";
+            $this->acheter();
+            return;
+        }
+
+        $this->modele->creerDemandeVente($idUtilisateur, $idAsso, $total, $_SESSION['panier_client']);
+
+        unset($_SESSION['panier_client']);
+
+        echo "<p>✅ Demande d'achat envoyée au barman</p>";
+        $this->acheter();
+    }
+
+
 
 
 

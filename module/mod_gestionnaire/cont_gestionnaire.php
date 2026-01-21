@@ -200,6 +200,8 @@ class ContGestionnaire {
         foreach ($_SESSION['panier'] as $item) {
             $prixUnitaire = $this->modele->getPrixUnitaire($item['id_produit']);
             $this->modele->ajouterDetailAchat($idAchat, $item['id_produit'], $item['quantite'], $prixUnitaire);
+            $idInventaire = $this->modele->getInventaireAssoc($_SESSION['id_association']);
+            $this->modele->ajouterStock($idInventaire, $item['id_produit'], $item['quantite']);
         }
 
         unset($_SESSION['panier']);

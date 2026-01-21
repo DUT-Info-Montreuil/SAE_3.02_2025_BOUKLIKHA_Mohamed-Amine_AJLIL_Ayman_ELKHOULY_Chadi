@@ -23,6 +23,32 @@ class ModeleClient extends Connexion {
         return $req->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getProduitParId($idProduit) {
+        $req = self::$bdd->prepare("SELECT * FROM Produit WHERE id_produit = ?");
+        $req->execute([$idProduit]);
+        return $req->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getGestionnaireId($idAssociation) {
+        $req = self::$bdd->prepare("SELECT id_utilisateur FROM Affectation WHERE id_association = ? AND id_role = 2");
+        $req->execute([$idAssociation]);
+        return $req->fetchColumn();
+    }
+
+
+    public function getProduitsDisponibles($idAssociation) {
+        $req = self::$bdd->prepare("
+        SELECT p.id_produit, p.nom, p.prix, c.quantite_inventaire
+        FROM Inventaire i
+        JOIN Contient c ON i.id_inventaire = c.id_inventaire
+        JOIN Produit p ON c.id_produit = p.id_produit
+        WHERE i.id_association = ? AND c.quantite_inventaire > 0
+    ");
+        $req->execute([$idAssociation]);
+        return $req->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
 
     public function creerDemandeAsso($idUtilisateur, $nom, $adresse, $contact, $url) {
         $req = self::$bdd->prepare("INSERT INTO DemandeAssociation (id_utilisateur, nom_asso, adresse, contact, url)VALUES (?, ?, ?, ?, ?)");
@@ -54,6 +80,14 @@ class ModeleClient extends Connexion {
         $req->execute([$idUtilisateur, $idAssociation]);
         return $req->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function getDemandesAchatClient($idUtilisateur, $idAssociation) {
+        $req = self::$bdd->prepare("
+        SELECT id_demande, montant_total FROM DemandeVente WHERE id_utilisateur = ? AND id_association = ? ORDER BY id_demande ASC");
+        $req->execute([$idUtilisateur, $idAssociation]);
+        return $req->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 
     public function quitterAssociation($idUtilisateur, $idAssociation) {
         $req = self::$bdd->prepare("DELETE FROM Affectation WHERE id_utilisateur = ? AND id_association = ? AND id_role = 4");
@@ -104,9 +138,13 @@ class ModeleClient extends Connexion {
         return $req->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function creerDemandeVente($idUtilisateur, $idAssociation, $montantTotal, $panier) {
+        // On stocke temporairement les produits dans la session pour le barman
+        $_SESSION['demande_temp'][$idUtilisateur] = $panier;
 
-
-
+        $req = self::$bdd->prepare("INSERT INTO DemandeVente (id_utilisateur, id_association, montant_total) VALUES (?, ?, ?)");
+        $req->execute([$idUtilisateur, $idAssociation, $montantTotal]);
+    }
 
 
 }

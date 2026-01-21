@@ -37,6 +37,23 @@ class ModClient {
             case 'recharger':
                 $this->controleur->recharger();
                 break;
+            case 'acheter':
+                $this->controleur->acheter();
+                break;
+            case 'ajouterAuPanierClient':
+                $this->controleur->ajouterAuPanierClient();
+                break;
+            case 'supprimerDuPanierClient':
+                $this->controleur->supprimerDuPanierClient();
+                break;
+            case 'validerPanierClient':
+                $this->controleur->validerPanierClient();
+                break;
+            case 'mesDemandesAchat':
+                $this->controleur->mesDemandesAchat();
+                break;
+
+
 
             default:
                 $this->controleur->accueil();

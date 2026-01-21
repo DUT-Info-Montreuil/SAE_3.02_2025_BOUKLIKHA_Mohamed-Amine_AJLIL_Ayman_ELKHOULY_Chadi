@@ -94,8 +94,10 @@ class VueClient extends VueGenerique {
         echo "<h1>" . htmlspecialchars($asso['nom_asso']) . "</h1>";
         echo "<h3>Solde : " . htmlspecialchars($solde) . " €</h3>";
 
+        echo "<a href='index.php?module=client&action=acheter'>🛒 Acheter</a><br>";
         echo "<a href='index.php?module=client&action=recharger'>Recharger</a><br>";
         echo "<a href='index.php?module=client&action=historique'>Historique</a><br>";
+        echo "<a href='index.php?module=client&action=mesDemandesAchat'>🛒 Mes demandes d'achat en attente</a><br>";
         echo "<a href='index.php?module=client&action=qrcode'>QR Code</a><br>";
         echo"<br>";
         echo "<a href='index.php?module=client&action=mesAssociations'>Mes associations</a><br>";
@@ -106,6 +108,66 @@ class VueClient extends VueGenerique {
               </form>";
         echo "</div>";
     }
+
+    public function afficherMesDemandesAchat($demandes) {
+        echo "<div class='card'>";
+        echo "<h2>Mes demandes d'achat en attente</h2>";
+
+        if (empty($demandes)) {
+            echo "<p>Aucune demande en attente ✅</p>";
+            echo "</div>";
+            return;
+        }
+
+        foreach ($demandes as $demande) {
+            echo "<p>Montant : " . number_format($demande['montant_total'], 2) . " €<br>";
+        }
+
+        echo "</div>";
+    }
+
+
+    public function formAchatClient($produits, $panier = []) {
+        echo "<div class='card'><h2>Boutique</h2>";
+
+        echo "<form method='post' action='index.php?module=client&action=ajouterAuPanierClient'>";
+        echo "<select name='id_produit'>";
+        foreach ($produits as $p) {
+            echo "<option value='". htmlspecialchars($p['id_produit']) ."' data-prix='". htmlspecialchars($p['prix']) ."' data-nom='". htmlspecialchars($p['nom']) ."'> ". htmlspecialchars($p['nom']) ." (". htmlspecialchars($p['prix']) ." €)</option>";
+        }
+        echo "</select>";
+
+        echo "<input type='number' name='quantite' value='1' min='1'>";
+        echo "<input type='hidden' name='prix' id='prix'>";
+        echo "<input type='hidden' name='nom' id='nom'>";
+        echo "<input type='submit' value='Ajouter'>";
+        echo "</form>";
+
+        echo "<h3>Panier</h3>";
+
+        if (!empty($panier)) {
+            $total = 0;
+            foreach ($panier as $key => $item) {
+                $montant = (double)$item['prix'] * $item['quantite'];
+                $total += $montant;
+
+                echo "". htmlspecialchars($item['nom']) ." x ". htmlspecialchars($item['quantite']) ." = $montant € 
+                <form method='post' action='index.php?module=client&action=supprimerDuPanierClient'>
+                    <input type='hidden' name='key' value='$key'>
+                    <input type='submit' value='Supprimer'>
+                </form><br>";
+            }
+
+            echo "<strong>Total : $total €</strong>";
+
+            echo "<form method='post' action='index.php?module=client&action=validerPanierClient'>
+                <input type='submit' value='Payer'>
+              </form>";
+        }
+
+        echo "</div>";
+    }
+
 
 
 
