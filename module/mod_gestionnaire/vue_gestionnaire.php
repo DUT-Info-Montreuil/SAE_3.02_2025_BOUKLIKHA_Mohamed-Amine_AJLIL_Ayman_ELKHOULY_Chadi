@@ -49,6 +49,8 @@ class VueGestionnaire extends VueGenerique {
 
 
 
+
+
     public function formCreationBarman() {
         echo "<div class='card'>";
         echo "<h2>Créer un barman</h2>";
@@ -104,6 +106,59 @@ class VueGestionnaire extends VueGenerique {
         echo "</div>";
     }
 
+    public function formAchat($produits, $fournisseurs, $panier = []) {
+        echo "<div class='card'><h2>Acheter des produits</h2>";
+        echo "<form method='post' action='index.php?module=gestionnaire&action=ajouterAuPanier'>";
+        echo "<label>Produit :</label><select name='id_produit'>";
+        foreach ($produits as $p) {
+            echo "<option value='" . htmlspecialchars($p['id_produit']) . "' data-prix='" . htmlspecialchars($p['prix']) . "'>"
+                . htmlspecialchars($p['nom']) . " (" . htmlspecialchars($p['prix']) . " €)</option>";
+        }
+        echo "</select><br>";
+        echo "<label>Fournisseur :</label><select name='id_fournisseur'>";
+        foreach ($fournisseurs as $f) {
+            echo "<option value='" . htmlspecialchars($f['id_fournisseur']) . "'>" . htmlspecialchars($f['nom']) . "</option>";
+        }
+        echo "</select><br>";
+        echo "<label>Quantité :</label><input type='number' name='quantite' value='1'><br>";
+        echo "<input type='submit' value='Ajouter au panier'>";
+        echo "</form><br>";
+
+        // Affichage du panier
+        echo "<h3>Panier :</h3>";
+        if (!empty($panier)) {
+            $total = 0;
+            echo "<ul>";
+            foreach ($panier as $key => $item) {
+                $sousTotal = $item['prix'] * $item['quantite'];
+                $total += $sousTotal;
+                echo "<li>";
+                echo htmlspecialchars($item['nom']) . " x " . $item['quantite'] . " = " . number_format($sousTotal, 2) . " € ";
+                echo "<form method='post' action='index.php?module=gestionnaire&action=supprimerDuPanier'>";
+                echo "<input type='hidden' name='key' value='" . htmlspecialchars($key) . "'>";
+                echo "<input type='submit' value='Supprimer'>";
+                echo "</form>";
+                echo "</li>";
+            }
+            echo "</ul>";
+            echo "<p><strong>Total : " . number_format($total, 2) . " €</strong></p>";
+            echo "<form method='post' action='index.php?module=gestionnaire&action=validerPanier'>";
+            echo "<input type='submit' value='Acheter'>";
+            echo "</form>";
+
+        } else {
+            echo "<p>Le panier est vide.</p>";
+        }
+        echo "</div>";
+    }
+
+    public function afficherSolde($solde) {
+        echo "<div class='card'>";
+        echo "<h2>Solde de l'association</h2>";
+        echo "<p><strong>Solde actuel : " . number_format($solde, 2) . " €</strong></p>";
+        echo "<a href='index.php?module=gestionnaire&action=accueil'>⬅ Retour</a>";
+        echo "</div>";
+    }
 
     public function formInventaire($produits, $contenu, $inventaireEnCours = false) {
     echo "<div class='card'><h2>Inventaire</h2>";
@@ -152,6 +207,8 @@ class VueGestionnaire extends VueGenerique {
         echo "<a href='index.php?module=gestionnaire&action=creerBarman'>👤 Créer un barman</a><br><br>";
         echo "<a href='index.php?module=gestionnaire&action=creerFournisseur'>📦 Créer un fournisseur</a><br><br>";
         echo "<a href='index.php?module=gestionnaire&action=creerProduit'>🍾 Créer un produit</a><br><br>";
+        echo "<a href='index.php?module=gestionnaire&action=voirSolde'>💰 Consulter le solde de l'association</a><br><br>";
+        echo "<a href='index.php?module=gestionnaire&action=acheterProduit'>🛒 Acheter des produits</a><br><br>";
         echo "<a href='index.php?module=gestionnaire&action=inventaire'>📊 Gérer l'inventaire</a><br><br>";
         echo "<a href='index.php?module=connexion&action=deconnexion'>🚪 Déconnexion</a>";
         echo "</div>";

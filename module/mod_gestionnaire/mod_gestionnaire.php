@@ -35,6 +35,29 @@ class ModGestionnaire {
             case 'inventaire':
                 $this->controleur->gererInventaire();
                 break;
+
+            case 'acheterProduit':
+                $this->controleur->acheterProduit();
+                break;
+
+            case 'ajouterAuPanier':
+                $this->controleur->ajouterAuPanier();
+                break;
+
+            case 'supprimerDuPanier':
+                $this->controleur->supprimerDuPanier();
+                break;
+
+            case 'validerPanier':
+                $this->controleur->validerPanier();
+                break;
+
+            case 'voirSolde':
+                $this->controleur->voirSolde();
+                break;
+
+
+
             default:
                 $this->controleur->accueil();
                 break;
