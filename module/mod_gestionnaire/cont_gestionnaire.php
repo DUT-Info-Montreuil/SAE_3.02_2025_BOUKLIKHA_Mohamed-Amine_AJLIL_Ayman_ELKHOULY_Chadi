@@ -109,6 +109,47 @@ class ContGestionnaire {
             $this->vue->formCreationProduit();
     }
 
+    public function acheterProduit() {
+        $produits = $this->modele->getProduits();
+        $fournisseurs = $this->modele->getFournisseurs();
+
+        // Préparer panier à envoyer à la vue
+        $panierAffichage = [];
+        if (!empty($_SESSION['panier'])) {
+            foreach ($_SESSION['panier'] as $key => $item) {
+                $produit = $this->modele->getProduitParId($item['id_produit']);
+                $panierAffichage[$key] = ['nom' => $produit['nom'], 'prix' => $produit['prix'], 'quantite' => $item['quantite']];
+            }
+        }
+        $this->vue->formAchat($produits, $fournisseurs, $panierAffichage);
+    }
+
+    public function ajouterAuPanier() {
+        if (!isset($_SESSION['panier'])) $_SESSION['panier'] = [];
+        $key = $_POST['id_produit'].'_'.$_POST['id_fournisseur'];
+
+        if (isset($_SESSION['panier'][$key])) {
+            $_SESSION['panier'][$key]['quantite'] += (int)$_POST['quantite'];
+        } else {
+            $_SESSION['panier'][$key] = ['id_produit' => $_POST['id_produit'], 'id_fournisseur' => $_POST['id_fournisseur'], 'quantite' => (int)$_POST['quantite']];
+        }
+        $this->acheterProduit();
+    }
+
+    public function supprimerDuPanier() {
+        if (isset($_POST['key']) && isset($_SESSION['panier'][$_POST['key']])) {
+            unset($_SESSION['panier'][$_POST['key']]);
+            echo "<p>Article supprimé du panier ✅</p>";
+        }
+        $this->acheterProduit();
+    }
+
+    public function voirSolde() {
+        $idUtilisateur = $_SESSION['id_utilisateur'];
+        $solde = $this->modele->getSoldeGestionnaire($idUtilisateur);
+
+        $this->vue->afficherSolde($solde);
+    }
 
     public function validationClients() {
         if ($_SESSION['id_role'] != 2) {
@@ -126,6 +167,44 @@ class ContGestionnaire {
         $demandes = $this->modele->getDemandesClients($idAssociation);
 
         $this->vue->afficherValidationClients($demandes);
+    }
+
+
+
+    public function validerPanier() {
+        if (empty($_SESSION['panier'])) {
+            echo "<p>Panier vide.</p>";
+            $this->acheterProduit();
+            return;
+        }
+
+        $idUtilisateur = $_SESSION['id_utilisateur'];
+        $idAsso = $this->modele->getAssociationGestionnaire($_SESSION['id_utilisateur']);
+        $total = 0;
+
+        foreach ($_SESSION['panier'] as $item) {
+            $produit = $this->modele->getProduitParId($item['id_produit']);
+            $total += $produit['prix'] * $item['quantite'];
+        }
+
+        $solde = $this->modele->getSoldeGestionnaire($idUtilisateur);
+        if ($total > $solde) {
+            echo "<p>❌ Solde insuffisant. Solde : " . number_format($solde,2) . " €</p>";
+            $this->acheterProduit();
+            return;
+        }
+
+        $this->modele->debiterSolde($idUtilisateur, $total);
+        $idAchat = $this->modele->creerAchat($idAsso, $total);
+
+        foreach ($_SESSION['panier'] as $item) {
+            $prixUnitaire = $this->modele->getPrixUnitaire($item['id_produit']);
+            $this->modele->ajouterDetailAchat($idAchat, $item['id_produit'], $item['quantite'], $prixUnitaire);
+        }
+
+        unset($_SESSION['panier']);
+        echo "<p>✅ Achat validé. Nouveau solde : " . number_format($solde - $total,2) . " €</p>";
+        $this->acheterProduit();
     }
 
 

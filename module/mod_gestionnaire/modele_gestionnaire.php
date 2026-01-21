@@ -98,6 +98,72 @@ class ModeleGestionnaire extends Connexion {
     }
 
 
+    public function getProduits() {
+        $req = self::$bdd->prepare("SELECT * FROM Produit");
+        $req->execute();
+        return $req->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    public function getFournisseurs() {
+        $req = self::$bdd->prepare("SELECT * FROM Fournisseur");
+        $req->execute();
+        return $req->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    public function getProduitParId($idProduit) {
+        $req = self::$bdd->prepare("SELECT * FROM Produit WHERE id_produit = ?");
+        $req->execute([$idProduit]);
+        return $req->fetch(PDO::FETCH_ASSOC);
+    }
+
+
+    public function creerAchat($idAssociation, $total) {
+        $req = self::$bdd->prepare("INSERT INTO Achat (date_achat, montant_total, id_association) VALUES (NOW(), ?, ?)");
+        $req->execute([$total, $idAssociation]);
+        return self::$bdd->lastInsertId();
+    }
+
+
+    public function ajouterDetailAchat($idAchat, $idProduit, $quantite, $prixUnitaire) {
+        // Calculer le prix total de cet item
+        $prixTotal = $quantite * $prixUnitaire;
+
+        // Insérer dans detailAchat
+        $req = self::$bdd->prepare("INSERT INTO detailAchat (id_achat, id_produit, quantite, prix_achat)VALUES (?, ?, ?, ?)");
+        $req->execute([$idAchat, $idProduit, $quantite, $prixTotal]);
+    }
+
+
+    public function getPrixUnitaire($idProduit) {
+        $req = self::$bdd->prepare("SELECT prix FROM Produit WHERE id_produit = ?");
+        $req->execute([$idProduit]);
+        return $req->fetchColumn();
+    }
+
+
+    public function getAssociationGestionnaire($idUtilisateur) {
+        $req = self::$bdd->prepare("SELECT id_association FROM Affectation WHERE id_utilisateur = ?");
+        $req->execute([$idUtilisateur]);
+        return $req->fetchColumn();
+    }
+
+
+    public function getSoldeGestionnaire($idUtilisateur) {
+        $req = self::$bdd->prepare("SELECT solde FROM Affectation WHERE id_utilisateur = ?");
+        $req->execute([$idUtilisateur]);
+        return $req->fetchColumn();
+    }
+
+
+    public function debiterSolde($idUtilisateur, $montant) {
+        $req = self::$bdd->prepare("UPDATE Affectation SET solde = solde - ? WHERE id_utilisateur = ?");
+        $req->execute([$montant, $idUtilisateur]);
+    }
+
+
+
     public function affecterBarman($idUtilisateur, $idAssociation) {
         $req = self::$bdd->prepare("INSERT INTO Affectation (id_utilisateur, id_association, id_role, solde) VALUES (?, ?, 3, 0)");
         $req->execute([$idUtilisateur, $idAssociation]);
