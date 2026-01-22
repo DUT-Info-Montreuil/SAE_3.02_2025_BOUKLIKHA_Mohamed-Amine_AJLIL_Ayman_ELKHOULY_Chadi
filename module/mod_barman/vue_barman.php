@@ -60,6 +60,26 @@ class VueBarman extends VueGenerique {
     }
 
 
+    public function afficherHistorique($ventes) {
+        echo "<h2>📜 Historique des ventes</h2>";
+
+        if (empty($ventes)) {
+            echo "<p>Aucune vente enregistrée ✅</p>";
+            return;
+        }
+
+        echo "<div class='historique-container'>";
+
+        foreach ($ventes as $vente) {
+            echo "<div class='historique-card'>";
+            echo "<p><strong>Date :</strong> " . htmlspecialchars($vente['date_vente']) . "</p>";
+            echo "<p><strong>Client :</strong> " . htmlspecialchars($vente['prenom']) . " " . htmlspecialchars($vente['nom']) . "</p>";
+            echo "<p><strong>Montant :</strong> " . number_format($vente['montant_total'], 2) . " €</p>";
+            echo "</div>";
+        }
+
+        echo "</div>";
+    }
 
 
 
@@ -70,6 +90,7 @@ class VueBarman extends VueGenerique {
         echo "<br>";
         echo "<a href='index.php?module=barman&action=gestionVentes'>💰 Gérer les ventes</a><br><br>";
         echo "<a href='index.php?module=barman&action=voirStock'>📦 Voir le stock</a><br><br>";
+        echo "<a href='index.php?module=barman&action=historique'>📝 Historique des ventes</a><br><br>";
         echo "<a href='index.php?module=connexion&action=deconnexion'>🚪 Déconnexion</a>";
         echo "</div>";
     }

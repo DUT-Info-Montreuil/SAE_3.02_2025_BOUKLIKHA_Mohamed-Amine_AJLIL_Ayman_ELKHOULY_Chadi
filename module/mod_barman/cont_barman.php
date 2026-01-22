@@ -88,6 +88,16 @@ class ContBarman {
     }
 
 
+    public function voirHistorique() {
+        if (!isset($_SESSION['id_role']) || $_SESSION['id_role'] != 3) {
+            echo "<p>Accès refusé : vous devez être barman.</p>";
+            exit();
+        }
+
+        $idAssociation = $_SESSION['id_association'];
+        $historique = $this->modele->getHistoriqueVentes($idAssociation);
+        $this->vue->afficherHistorique($historique);
+    }
 
 
 

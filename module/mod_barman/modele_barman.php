@@ -78,6 +78,20 @@ class ModeleBarman extends Connexion {
         unset($_SESSION['demande_temp'][$idUtilisateur]);
     }
 
+    public function getHistoriqueVentes($idAssociation) {
+        $req = self::$bdd->prepare("
+        SELECT v.id_vente, v.date_vente, v.montant_total, u.prenom, u.nom
+        FROM Vente v
+        JOIN Utilisateur u ON v.id_utilisateur = u.id_utilisateur
+        JOIN Affectation a ON u.id_utilisateur = a.id_utilisateur
+        WHERE a.id_association = ?
+        ORDER BY v.date_vente DESC
+    ");
+        $req->execute([$idAssociation]);
+        return $req->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
 
 }
 ?>
