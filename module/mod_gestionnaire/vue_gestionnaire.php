@@ -212,20 +212,32 @@ class VueGestionnaire extends VueGenerique {
     }
 
 
+
+
     public function afficherAccueil() {
-        echo "<div class='card'>";
-        echo "<h1>Bienvenue Gestionnaire " . htmlspecialchars($_SESSION['prenom']) . " " . htmlspecialchars($_SESSION['nom']) . "</h1>";
-        echo "<p>Vous pouvez gérer les barmans, les fournisseurs et les produits de votre association.</p>";
-        echo "<a href='index.php?module=gestionnaire&action=validationClients'>📥 Demandes d’adhésion </a><br><br>";
-        echo "<a href='index.php?module=gestionnaire&action=site'> 🌐 Url de votre association </a><br><br>";
-        echo "<a href='index.php?module=gestionnaire&action=creerBarman'>👤 Créer un barman</a><br><br>";
-        echo "<a href='index.php?module=gestionnaire&action=creerFournisseur'>📦 Créer un fournisseur</a><br><br>";
-        echo "<a href='index.php?module=gestionnaire&action=creerProduit'>🍾 Créer un produit</a><br><br>";
-        echo "<a href='index.php?module=gestionnaire&action=acheterProduit'>🛒 Acheter des produits</a><br><br>";
-        echo "<a href='index.php?module=gestionnaire&action=voirBilan'>💰 Consulter le solde de l'association</a><br><br>";
-        echo "<a href='index.php?module=gestionnaire&action=inventaire'>📊 Gérer l'inventaire</a><br><br>";
-        echo "<a href='index.php?module=connexion&action=deconnexion'>🚪 Déconnexion</a>";
+        echo "<div class='card gest-card'>";
+        echo "<h1>Bienvenue Gestionnaire</h1>";
+        echo "<p>Gestion de votre association</p>";
+
+        echo "<div class='gest-actions'>";
+        echo "<a class='btn-gest btn-demandes' href='index.php?module=gestionnaire&action=validationClients'>📥 Demandes</a>";
+        echo "<a class='btn-gest btn-site' href='index.php?module=gestionnaire&action=site'>🌐 Site</a>";
+        echo "<a class='btn-gest btn-user' href='index.php?module=gestionnaire&action=creerBarman'>👤 Barman</a>";
+        echo "<a class='btn-gest btn-fournisseur' href='index.php?module=gestionnaire&action=creerFournisseur'>📦 Fournisseur</a>";
+        echo "<a class='btn-gest btn-produit' href='index.php?module=gestionnaire&action=creerProduit'>🍾 Produit</a>";
+        echo "<a class='btn-gest btn-solde' href='index.php?module=gestionnaire&action=voirBilan'>💰 Solde</a>";
+        echo "<a class='btn-gest btn-achat' href='index.php?module=gestionnaire&action=acheterProduit'>🛒 Acheter</a>";
+        echo "<a class='btn-gest btn-inventaire' href='index.php?module=gestionnaire&action=inventaire'>📊 Inventaire</a>";
+        echo "</div>";
+
+        echo "<a class='btn-logout' href='index.php?module=connexion&action=deconnexion'>🚪 Déconnexion</a>";
         echo "</div>";
     }
+
+
+
+
 }
+
+
 ?>

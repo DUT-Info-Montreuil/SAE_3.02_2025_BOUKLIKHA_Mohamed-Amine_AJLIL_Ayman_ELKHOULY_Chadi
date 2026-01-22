@@ -28,24 +28,24 @@ class VueClient extends VueGenerique {
 
 
     public function formRecharger() {
-        echo "<div class='card'>";
-        echo "<h2>Recharger mon compte</h2>";
+        echo "<div class='card recharge-card'>";
+        echo "<h2>💳 Recharger mon compte</h2>";
 
-        echo "<form method='post'>";
+        echo "<form method='post' class='recharge-form'>";
 
-        echo "<label>Montant :</label><br>";
-        echo "<select name='montant'>
-            <option value='10'>10 €</option>
-            <option value='20'>20 €</option>
-            <option value='50'>50 €</option>
-            </select><br><br>";
+        echo "<label>Montant</label>";
+        echo "<select name='montant' class='recharge-select'>
+                    <option value='10'>10 €</option>
+                    <option value='20'>20 €</option>
+                    <option value='50'>50 €</option>
+              </select>";
 
-        echo "<label>Confirmer votre mot de passe :</label><br>";
-        echo "<input type='password' name='mdp' required><br><br>";
+        echo "<label>Mot de passe</label>";
+        echo "<input type='password' name='mdp' class='recharge-input' required>";
 
-        echo "<input type='submit' value='Recharger'>";
+        echo "<button type='submit' class='recharge-btn'>💰 Recharger</button>";
+
         echo "</form>";
-
         echo "</div>";
         echo "<a href='index.php?module=client&action=accueilAsso'>⬅ Retour</a>";
     }
@@ -86,25 +86,36 @@ class VueClient extends VueGenerique {
 
 
     public function afficherAccueilAsso($asso, $solde) {
-        echo "<div class='card'>";
-        echo "<h1>" . htmlspecialchars($asso['nom_asso']) . "</h1>";
-        echo "<h3>Solde : " . htmlspecialchars($solde) . " €</h3>";
+        echo "<div class='card accueil-asso'>";
 
-        echo "<a href='index.php?module=client&action=acheter'>🛒 Acheter</a><br>";
-        echo "<a href='index.php?module=client&action=recharger'>Recharger</a><br>";
-        echo "<a href='index.php?module=client&action=historique'>Historique</a><br>";
-        echo "<a href='index.php?module=client&action=mesDemandesAchat'>🛒 Mes demandes d'achat en attente</a><br>";
-        echo "<a href='index.php?module=client&action=accueilAsso'>QR Code</a><br>";
-        echo"<br>";
-        echo "<a href='index.php?module=client&action=mesAssociations'>Mes associations</a><br>";
-        echo " <br> ";
+        echo "<h1 class='asso-title'>" . htmlspecialchars($asso['nom_asso']) . "</h1>";
 
-        echo "<form method='post' action='index.php?module=client&action=quitterAsso'>
-                <input type='submit' value='Quitter l’association'>
-              </form>";
+        echo "<div class='solde-wrapper'>
+                <div class='solde-outer'>
+                    <div class='solde-inner'>
+                        <small>Solde</small><br>
+                        <strong>" . htmlspecialchars($solde) . " €</strong>
+                    </div>
+                </div>
+            </div>";
+
+        echo "<div class='asso-actions'>";
+        echo "<a class='btn-asso btn-buy' href='index.php?module=client&action=acheter'>🛒 Acheter</a>";
+        echo "<a class='btn-asso btn-recharge' href='index.php?module=client&action=recharger'>💳 Recharger</a>";
+        echo "<a class='btn-asso btn-history' href='index.php?module=client&action=historique'>📜 Historique</a>";
+        echo "<a class='btn-asso btn-pending' href='index.php?module=client&action=mesDemandesAchat'>⏳ Demandes</a>";
+        echo "<a class='btn-asso btn-qr' href='index.php?module=client&action=qrcode'>📱 QR Code</a>";
+        echo "<a class='btn-asso btn-back' href='index.php?module=client&action=mesAssociations'>↩ Mes associations</a>";
+        echo "</div>";
+
+        echo "<div class='asso-quitte'>
+                <form method='post' action='index.php?module=client&action=quitterAsso'>
+                    <button class='btn-quit'>❌ Quitter l’association</button>
+                </form>
+              </div>";
+
         echo "</div>";
     }
-
 
     public function afficherMesDemandesAchat($demandes) {
         echo "<div class='card'>";
@@ -129,18 +140,16 @@ class VueClient extends VueGenerique {
         foreach ($produits as $p) {
             echo "<div class='stock-card'>";
             echo "<h3>". htmlspecialchars($p['nom']) ."</h3>";
+            echo "<img src='". htmlspecialchars($p['image']) ."' class='product-img'>";
             echo "<p>". number_format($p['prix'],2) ." €</p>";
-            // image
 
             echo "<form method='post' action='index.php?module=client&action=ajouterAuPanierClient' class='stock-actions'>
-            <input type='hidden' name='id_produit' value='{$p['id_produit']}'>
-            <button name='quantite' value='-1'>−</button>
-            <button name='quantite' value='1'>+</button>
-            </form>";
-
+                    <input type='hidden' name='id_produit' value='" . htmlspecialchars($p['id_produit']) ."'>
+                    <button name='quantite' value='-1'>−</button>
+                    <button name='quantite' value='1'>+</button>
+                  </form>";
             echo "</div>";
         }
-
         echo "</div>";
 
         /* PANIER */
@@ -155,20 +164,20 @@ class VueClient extends VueGenerique {
                 $sousTotal = $item['prix'] * $item['quantite'];
                 $total += $sousTotal;
 
-                echo "<div class='card'>";
-                echo htmlspecialchars($item['nom']) . " x " . $item['quantite'] . " = " . number_format($sousTotal,2) . " €";
-                echo "
-            <form method='post' action='index.php?module=client&action=supprimerDuPanierClient'>
-                <input type='hidden' name='key' value='$key'>
-                <button>Retirer</button>
-            </form>";
-                echo "</div>";
-            }
+            echo "<div class='card'>";
+            echo htmlspecialchars($item['nom']) . " x " . $item['quantite'] . " = " . number_format($sousTotal,2) . " €";
+            echo "<form method='post' action='index.php?module=client&action=supprimerDuPanierClient'>
+                       <input type='hidden' name='key' value='$key'>
+                       <button class='btn-retirer'>Retirer</button>
+                  </form>";
+            echo "</div>";
+        }
 
-            echo "<h3>Total : ". number_format($total,2) ." €</h3>";
-            echo "<form method='post' action='index.php?module=client&action=validerPanierClient'>
-            <button>💳 Payer</button>
-          </form>";
+        echo "<h3>Total : ". number_format($total,2) ." €</h3>";
+
+        echo "<form method='post' action='index.php?module=client&action=validerPanierClient'>
+                    <button class = btn-payer>💳 Payer</button>
+              </form>";
         }
         echo "<a href='index.php?module=client&action=accueilAsso'>⬅ Retour</a>";
     }
@@ -203,16 +212,22 @@ class VueClient extends VueGenerique {
     }
 
 
+
+
+
     public function afficherAccueil() {
-        echo "<div class='card'>";
+        echo "<div class='card accueil-card'>";
         echo "<h1>Bienvenue " . htmlspecialchars($_SESSION['prenom']) . " " . htmlspecialchars($_SESSION['nom']) . "</h1>";
 
-        echo "<a href='index.php?module=client&action=mesAssociations'>Mes associations</a><br>";
-        echo "<a href='index.php?module=client&action=choisirAsso'>Choisir une association</a><br>";
-        echo "<a href='index.php?module=client&action=demanderCreationAsso'>Créer votre association</a><br>";
-        echo "<a href='index.php?module=connexion&action=deconnexion'>Déconnexion</a>";
+        echo "<a class='btn-accueil btn-mesasso' href='index.php?module=client&action=mesAssociations'>🏠 Mes associations</a>";
+        echo "<a class='btn-accueil btn-choisir' href='index.php?module=client&action=choisirAsso'>🔍 Choisir une association</a>";
+        echo "<a class='btn-accueil btn-creer' href='index.php?module=client&action=demanderCreationAsso'>➕ Créer votre association</a>";
+        echo "<a class='btn-accueil btn-deco' href='index.php?module=connexion&action=deconnexion'>🚪 Déconnexion</a>";
+
         echo "</div>";
     }
+
+
 
 
 }

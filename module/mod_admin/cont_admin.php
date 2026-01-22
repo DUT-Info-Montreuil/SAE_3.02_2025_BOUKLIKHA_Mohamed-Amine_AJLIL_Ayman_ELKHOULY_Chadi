@@ -12,7 +12,6 @@ class ContAdmin {
         $this->modele = new ModeleAdmin();
     }
 
-
     public function accueil() {
         // Vérifier si l'utilisateur est connecté et admin
         if (!isset($_SESSION['identifiant']) || $_SESSION['id_role'] != 1) {
