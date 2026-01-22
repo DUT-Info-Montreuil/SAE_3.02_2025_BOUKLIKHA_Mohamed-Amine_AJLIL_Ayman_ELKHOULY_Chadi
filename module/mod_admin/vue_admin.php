@@ -31,12 +31,15 @@ class VueAdmin extends VueGenerique {
 
 
     public function afficherAccueil() {
-        echo "<div class='card'>";
-        echo "<h1>Bienvenue Admin " . htmlspecialchars($_SESSION['prenom']) . " " . htmlspecialchars($_SESSION['nom']) . "</h1>";
-        echo "<p>Vous pouvez gérer les associations et les gestionnaires.</p>";
-        echo "<a href='index.php?module=admin&action=accepterCreationAsso'>📥 Demandes de création d'associations en attentes </a><br><br>";
-        echo "<a href='index.php?module=connexion&action=deconnexion'>Déconnexion</a>";
+        echo "<div class='card admin-card'>";
+        echo "<h1>Bienvenue " . htmlspecialchars($_SESSION['prenom']) . "</h1>";
+        echo "<p>Gestion des associations</p>";
+
+        echo "<a class='btn-admin btn-demandes' href='index.php?module=admin&action=accepterCreationAsso'>📥 Demandes de création</a>";
+
+        echo "<a class='btn-logout' href='index.php?module=connexion&action=deconnexion'>🚪 Déconnexion</a>";
         echo "</div>";
+
     }
 
 

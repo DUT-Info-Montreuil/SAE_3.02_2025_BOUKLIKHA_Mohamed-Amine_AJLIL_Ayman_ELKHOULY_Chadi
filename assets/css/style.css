@@ -1,3 +1,5 @@
+/* ======== CSS GLOBAL ======== */
+
 * {
     margin: 0;
     padding: 0;
@@ -38,10 +40,12 @@ header a {
 .main {
     flex: 1;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column; /* empile verticalement */
+    justify-content: flex-start; /* commence en haut */
+    align-items: center; /* centre horizontalement */
     padding: 20px;
 }
+
 
 /* Carte */
 .card {
@@ -91,7 +95,526 @@ header a {
     font-weight: bold;
 }
 
-/* Footer */
+
+/* Espacement entre titres et paragraphes */
+h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 20px;
+}
+
+p {
+    margin-bottom: 10px;
+}
+
+/* Espacement entre images */
+img, .product-img {
+    margin-bottom: 12px;
+}
+
+/* Espacement intérieur cartes */
+.card, .stock-card, .historique-card, .accueil-card {
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+
+
+
+
+
+
+
+/* ======== ADMIN ======== */
+
+.admin-card {
+    max-width: 450px;
+    margin: 20px auto;
+    padding: 25px;
+    text-align: center;
+}
+
+/* Bouton admin */
+.btn-admin {
+    display: block;
+    margin: 20px 0;
+    padding: 14px;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+/* Demandes */
+.btn-demandes {
+    background: linear-gradient(135deg, #f39c12, #f1c40f);
+}
+
+/* Hover */
+.btn-admin:hover {
+    filter: brightness(1.1);
+}
+
+
+
+
+
+
+
+
+/* ======== GESTIONNAIRE ======== */
+
+.gest-card {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 25px;
+    text-align: center;
+}
+
+.gest-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+/* Bouton commun */
+.btn-gest {
+    padding: 12px;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    text-align: center;
+}
+
+.btn-demandes {
+    background: linear-gradient(135deg, #f39c12, #f1c40f);
+}
+
+.btn-site {
+    background: linear-gradient(135deg, #3498db, #5dade2);
+}
+
+.btn-user {
+    background: linear-gradient(135deg, #8e44ad, #b784e0);
+}
+
+.btn-fournisseur {
+    background: linear-gradient(135deg, #16a085, #48c9b0);
+}
+
+.btn-produit {
+    background: linear-gradient(135deg, #2ecc71, #58d68d);
+}
+
+.btn-solde {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+}
+
+.btn-achat {
+    background: linear-gradient(135deg, #2980b9, #5dade2);
+}
+
+.btn-inventaire {
+    background: linear-gradient(135deg, #7f8c8d, #b2babb);
+}
+/* Hover académique */
+.btn-gest:hover {
+    filter: brightness(0.9);
+}
+
+/* Déconnexion */
+.btn-logout {
+    display: block;
+    margin-top: 20px;
+    padding: 12px;
+    background: red;
+    color: white;
+    border-radius: 8px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+
+
+
+
+
+
+
+/* ======== BARMAN ======== */
+
+.barman-card {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 25px;
+    text-align: center;
+}
+
+.barman-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.btn-barman {
+    padding: 14px;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+/* Couleurs logiques */
+.btn-ventes {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+}
+
+.btn-stock {
+    background: linear-gradient(135deg, #2980b9, #5dade2);
+}
+
+.btn-historique {
+    background: linear-gradient(135deg, #8e44ad, #b784e0);
+}
+
+/* Hover */
+.btn-barman:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+}
+
+
+.stock-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.stock-card {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    width: 220px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    border-left: 6px solid #3498db;
+}
+
+.stock-card h3 {
+    margin-top: 0;
+}
+
+.stock-quantite {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* couleurs selon quantité */
+.stock-ok {
+    color: green;
+}
+
+.stock-faible {
+    color: orange;
+}
+
+.stock-vide {
+    color: red;
+}
+
+
+.historique-container {
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.historique-card {
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    width: 250px;
+}
+
+
+
+
+
+
+
+
+/* ======== CLIENT ======== */
+
+/* ===== ACCUEIL ASSO ===== */
+
+/* Carte asso */
+.accueil-asso {
+    max-width: 480px;
+    text-align: center;
+    padding: 25px;
+}
+
+/* Nom de l’asso */
+.asso-title {
+    margin-bottom: 10px;
+}
+
+/* Solde */
+.solde-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 15px 0 25px;
+}
+
+/* Double cercle */
+.solde-outer {
+    width: 110px;
+    height: 110px;
+    background: #a3c4ff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.solde-inner {
+    width: 85px;
+    height: 85px;
+    background: #0066FF;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 18px;
+}
+
+/* Zone des boutons */
+.asso-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+/* Boutons */
+.btn-asso {
+    padding: 14px;
+    border-radius: 12px;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.btn-buy {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+}
+.btn-recharge {
+    background: linear-gradient(135deg, #2980b9, #3498db);
+}
+.btn-history {
+    background: linear-gradient(135deg, #8e44ad, #b37cd9);
+}
+.btn-pending {
+    background: linear-gradient(135deg, #f39c12, #f1c40f);
+}
+.btn-qr {
+    background: linear-gradient(135deg, #16a085, #1abc9c);
+}
+.btn-back {
+    background: linear-gradient(135deg, #7f8c8d, #bdc3c7);
+}
+
+.btn-asso:hover {
+    transform: scale(1.05);
+    filter: brightness(1.1);
+}
+
+/* Zone pour quitter */
+.asso-quitte {
+    margin-top: 25px;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
+}
+
+.btn-quit {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #e74c3c, #ff7675);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-quit:hover {
+    background: linear-gradient(135deg, #c0392b, #ff6b6b);
+}
+
+
+
+
+/* ===== PANIER CLIENT ===== */
+
+.product-img {
+    width: 100%;
+    height: 140px;
+    object-fit: contain;
+}
+
+.stock-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.stock-actions button {
+    width: 40%;
+    font-size: 22px;
+    border-radius: 8px;
+    background: #0066FF;
+    color: white;
+}
+
+
+/* Boutons simples */
+.btn-payer {
+    background: green;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-retirer {
+    background: red;
+    color: white;
+    padding: 2px 4px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+
+
+
+/* ===== RECHARGER ====== */
+
+/* Carte recharge */
+.recharge-card {
+    max-width: 400px;
+    margin: auto;
+    text-align: center;
+}
+
+/* Formulaire */
+.recharge-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Labels */
+.recharge-form label {
+    text-align: left;
+    font-weight: bold;
+    color: #0066FF;
+}
+
+/* Select et input */
+.recharge-select,
+.recharge-input {
+    padding: 12px;
+    border-radius: 8px;
+    border: 2px solid #0066FF;
+    font-size: 16px;
+    background: #f8fbff;
+}
+
+/* Menu déroulant */
+.recharge-select {
+    cursor: pointer;
+}
+
+/* Bouton */
+.recharge-btn {
+    margin-top: 10px;
+    padding: 14px;
+    background: linear-gradient(135deg, #0066FF, #4da3ff);
+    color: white;
+    border-radius: 30px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.recharge-btn:hover {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #0052cc, #2f8cff);
+}
+
+
+
+
+
+
+
+
+/* ======== ACCUEIL ======== */
+
+/* Carte accueil */
+.accueil-card {
+    max-width: 450px;
+    text-align: center;
+    padding: 25px;
+}
+
+/* Tous les boutons accueil */
+.btn-accueil {
+    display: block;
+    padding: 14px;
+    margin: 10px 0;
+    border-radius: 12px;
+    color: white;
+    font-weight: bold;
+    transition: 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+
+/* Mes associations – bleu (neutre, navigation) */
+.btn-mesasso {
+    background: linear-gradient(135deg, #0066FF, #4da3ff);
+}
+
+/* Choisir une association – violet (exploration) */
+.btn-choisir {
+    background: linear-gradient(135deg, #7b2cff, #b57dff);
+}
+
+/* Créer une asso – vert (action positive) */
+.btn-creer {
+    background: linear-gradient(135deg, #1abc9c, #2ecc71);
+}
+
+/* Déconnexion – rouge */
+.btn-deco {
+    background: linear-gradient(135deg, #e74c3c, #ff7675);
+}
+
+/* Effet hover */
+.btn-accueil:hover {
+    transform: scale(1.04);
+    filter: brightness(1.1);
+}
+
+
+
+
+
+
+
+
+/* ======== FOOTER ======== */
 footer {
     background: white;
     text-align: center;
