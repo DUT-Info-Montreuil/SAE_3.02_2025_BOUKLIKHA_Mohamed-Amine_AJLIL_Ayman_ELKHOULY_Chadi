@@ -44,6 +44,28 @@ class ModeleBarman extends Connexion {
         return self::$bdd->lastInsertId();
     }
 
+    public function getSoldeClient($idUtilisateur, $idAssociation) {
+        $req = self::$bdd->prepare("SELECT solde FROM Affectation WHERE id_utilisateur = ? AND id_association = ?");
+        $req->execute([$idUtilisateur, $idAssociation]);
+        return (float)$req->fetchColumn();
+    }
+
+    public function getStockProduit($idAssociation, $idProduit) {
+        $req = self::$bdd->prepare("
+        SELECT c.quantite_inventaire 
+        FROM Contient c 
+        JOIN Inventaire i ON c.id_inventaire = i.id_inventaire 
+        WHERE i.id_association = ? AND c.id_produit = ?");
+        $req->execute([$idAssociation, $idProduit]);
+        $qte = $req->fetchColumn();
+        if ($qte !== false) {
+            return (int)$qte;
+        } else {
+            return 0;
+        }
+    }
+
+
     public function insererDetailVente($idVente, $panier) {
         foreach ($panier as $item) {
             $req = self::$bdd->prepare("INSERT INTO DetailVente (id_vente, id_produit, quantite, prix_unitaire) VALUES (?, ?, ?, ?)");
