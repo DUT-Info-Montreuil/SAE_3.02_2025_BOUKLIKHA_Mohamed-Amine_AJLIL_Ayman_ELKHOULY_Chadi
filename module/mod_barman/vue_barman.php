@@ -43,6 +43,11 @@ class VueBarman extends VueGenerique {
             echo "<input type='hidden' name='id_demande' value='" . htmlspecialchars($demande['id_demande']) . "'>";
             echo "<input type='submit' value='✅ Valider'>";
             echo "</form>";
+            echo "<form method='post' action='index.php?module=barman&action=refuserDemande'>";
+            echo "<input type='hidden' name='id_demande' value='" . htmlspecialchars($demande['id_demande']) . "'>";
+            echo "<input type='submit' value='❌ Refuser'>";
+            echo "</form>";
+
             echo "</div>";
         }
     }

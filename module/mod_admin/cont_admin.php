@@ -29,7 +29,7 @@ class ContAdmin {
     public function accepterCreationAsso() {
         if ($_SESSION['id_role'] != 1) exit();
 
-        if (isset($_POST['id_demande'])) {
+        if (isset($_POST['id_demande']) && isset($_POST['valider'])) {
             $demande = $this->modele->getDemandeParId($_POST['id_demande']);
 
             // Créer l'association officielle
@@ -49,9 +49,29 @@ class ContAdmin {
             echo "<p>Demande validée ✅</p>";
         }
 
+        if (isset($_POST['id_demande']) && isset($_POST['refuser'])) {
+            $this->modele->refuserDemande($_POST['id_demande']);
+            echo "<p>Demande refusée ❌</p>";
+        }
+
         $demandes = $this->modele->getDemandesAssociation();
         $this->vue->afficherDemandesCreationAsso($demandes);
     }
+
+    public function refuserCreationAsso() {
+        if ($_SESSION['id_role'] != 1) {
+            exit();
+        }
+
+        if (isset($_POST['id_demande'])) {
+            $this->modele->refuserDemande($_POST['id_demande']);
+            echo "<p>Demande refusée ❌</p>";
+        }
+
+        $demandes = $this->modele->getDemandesAssociation();
+        $this->vue->afficherDemandesCreationAsso($demandes);
+    }
+
 
 
 

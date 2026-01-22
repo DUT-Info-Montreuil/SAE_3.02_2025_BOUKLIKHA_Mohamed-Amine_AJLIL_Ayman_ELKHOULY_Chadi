@@ -46,6 +46,12 @@ class ModeleGestionnaire extends Connexion {
         }
     }
 
+    public function refuserDemandeClient($idDemande) {
+        $req = self::$bdd->prepare("DELETE FROM DemandeClient WHERE id_demande = ?");
+        $req->execute([$idDemande]);
+    }
+
+
 
     public function getAssociationParId($idAssociation) {
         $req = self::$bdd->prepare("SELECT * FROM Association WHERE id_association = ?");

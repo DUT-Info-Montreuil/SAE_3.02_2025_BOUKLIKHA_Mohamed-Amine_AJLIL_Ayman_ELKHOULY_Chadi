@@ -64,6 +64,29 @@ class ContBarman {
         $this->gestionDemandes();
     }
 
+    public function refuserDemande() {
+        if (!isset($_SESSION['id_role']) || $_SESSION['id_role'] != 3) {
+            echo "<p>Accès refusé</p>";
+            return;
+        }
+
+        if (isset($_POST['id_demande'])) {
+            $idDemande = (int)$_POST['id_demande'];
+
+            $demande = $this->modele->getDemandeById($idDemande);
+            $idUtilisateur = $demande['id_utilisateur'];
+
+            // suppression simple
+            $this->modele->supprimerDemande($idDemande);
+            unset($_SESSION['demande_temp'][$idUtilisateur]);
+
+            echo "<p>❌ Demande refusée</p>";
+        }
+
+        $this->gestionDemandes();
+    }
+
+
 
 
 

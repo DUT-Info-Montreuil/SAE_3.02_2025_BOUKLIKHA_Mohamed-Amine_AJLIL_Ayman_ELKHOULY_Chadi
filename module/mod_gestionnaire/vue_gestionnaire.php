@@ -21,7 +21,8 @@ class VueGestionnaire extends VueGenerique {
             echo "<form method='post'>";
             echo "<strong>". htmlspecialchars($demande['prenom']) . " " . htmlspecialchars($demande['nom']) ."</strong><br>";
             echo "<input type='hidden' name='id_demande' value='" . $demande['id_demande'] . "'>";
-            echo "<input type='submit' name='valider' value='Accepter'>";
+            echo "<input type='submit' name='valider' value='✅ Accepter'>";
+            echo "<input type='submit' name='refuser' value='❌ Refuser'>";
             echo "</form><hr>";
         }
 

@@ -162,6 +162,11 @@ class ContGestionnaire {
             echo "<p>Demande acceptée ✅</p>";
         }
 
+        if (isset($_POST['id_demande']) && isset($_POST['refuser'])) {
+            $this->modele->refuserDemandeClient($_POST['id_demande']);
+            echo "<p>Demande refusée ❌</p>";
+        }
+
         // Ensuite on récupère toutes les demandes pour l'affichage
         $idAssociation = $_SESSION['id_association']; // l'asso du gestionnaire
         $demandes = $this->modele->getDemandesClients($idAssociation);

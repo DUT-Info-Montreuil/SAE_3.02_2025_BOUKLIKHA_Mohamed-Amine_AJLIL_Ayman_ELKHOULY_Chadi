@@ -26,7 +26,9 @@ class ModBarman {
             case 'validerDemande':
                 $this->controleur->validerDemande();
                 break;
-
+            case 'refuserDemande':
+                $this->controleur->refuserDemande();
+                break;
             default:
                 $this->controleur->accueil();
                 break;

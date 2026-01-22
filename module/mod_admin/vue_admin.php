@@ -19,7 +19,8 @@ class VueAdmin extends VueGenerique {
             echo "Demandée par : " . htmlspecialchars($demande['prenom_utilisateur']) . " " . htmlspecialchars($demande['nom_utilisateur']) . "<br>";
 
             echo "<input type='hidden' name='id_demande' value='" . $demande['id_demande'] . "'>";
-            echo "<input type='submit' value='Valider'>";
+            echo "<input type='submit' name='valider' value='✅ Valider'>";
+            echo "<input type='submit' name='refuser' value='❌ Refuser'>";
             echo "</form><hr>";
         }
 

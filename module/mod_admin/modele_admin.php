@@ -36,6 +36,12 @@ class ModeleAdmin extends Connexion {
         $req->execute([$idDemande['id_demande']]);
     }
 
+    public function refuserDemande($idDemande) {
+        $req = self::$bdd->prepare("DELETE FROM DemandeAssociation WHERE id_demande = ?");
+        $req->execute([$idDemande]);
+    }
+
+
     public function validerGestionnaire($idUtilisateur, $idAssociation) {
         // Changer le rôle du client en gestionnaire
         $req = self::$bdd->prepare("UPDATE Utilisateur SET id_role = 2 WHERE id_utilisateur = ?");
