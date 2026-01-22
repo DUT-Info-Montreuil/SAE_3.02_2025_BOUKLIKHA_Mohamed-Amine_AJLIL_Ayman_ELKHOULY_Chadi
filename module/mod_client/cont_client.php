@@ -211,22 +211,30 @@ class ContClient {
 
 
     public function ajouterAuPanierClient() {
-        if (!isset($_SESSION['panier_client'])) $_SESSION['panier_client'] = [];
+
+        if (!isset($_SESSION['panier_client'])) {
+            $_SESSION['panier_client'] = [];
+        }
 
         $idProduit = $_POST['id_produit'];
-        $quantite = (int)$_POST['quantite'];
+        $quant = (int) $_POST['quantite'];
 
         $produit = $this->modele->getProduitParId($idProduit);
 
-        if (isset($_SESSION['panier_client'][$idProduit])) {
-            $_SESSION['panier_client'][$idProduit]['quantite'] += $quantite;
-        } else {
+        if (!isset($_SESSION['panier_client'][$idProduit])) {
             $_SESSION['panier_client'][$idProduit] = [
                 'id_produit' => $idProduit,
                 'nom' => $produit['nom'],
                 'prix' => $produit['prix'],
-                'quantite' => $quantite
+                'quantite' => 0
             ];
+        }
+
+        $_SESSION['panier_client'][$idProduit]['quantite'] += $quant;
+
+        // Si quantité = 0 → supprimer
+        if ($_SESSION['panier_client'][$idProduit]['quantite'] <= 0) {
+            unset($_SESSION['panier_client'][$idProduit]);
         }
 
         $this->acheter();
@@ -272,7 +280,18 @@ class ContClient {
     }
 
 
+    public function historique() {
+        if ($_SESSION['id_role'] != 4 || !isset($_SESSION['id_association'])) {
+            echo "Accès refusé";
+            return;
+        }
 
+        $idUtilisateur = $_SESSION['id_utilisateur'];
+        $idAssociation = $_SESSION['id_association'];
+
+        $historique = $this->modele->getHistoriqueClient($idUtilisateur, $idAssociation);
+        $this->vue->afficherHistorique($historique);
+    }
 
 
 

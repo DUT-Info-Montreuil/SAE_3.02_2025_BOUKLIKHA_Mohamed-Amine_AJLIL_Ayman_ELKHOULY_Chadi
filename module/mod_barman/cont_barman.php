@@ -23,7 +23,8 @@ class ContBarman {
             exit();
         }
 
-        $stock = $this->modele->getStock();
+        $idAssociation = $_SESSION['id_association'];
+        $stock = $this->modele->getStock($idAssociation);
         $this->vue->afficherStock($stock);
     }
 

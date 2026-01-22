@@ -9,20 +9,27 @@ class VueBarman extends VueGenerique {
     }
 
     public function afficherStock($stock) {
+
         echo "<h2>📦 Stock actuel</h2>";
-        echo "<table>";
-        echo "<tr><th>Produit</th><th>Type</th><th>Prix</th><th>Quantité disponible</th></tr>";
+        echo "<div class='stock-container'>";
 
         foreach ($stock as $produit) {
-            echo "<tr>";
-            echo "<td>" . htmlspecialchars($produit['nom']) . "</td>";
-            echo "<td>" . htmlspecialchars($produit['type']) . "</td>";
-            echo "<td>" . number_format($produit['prix'],2) . " €</td>";
-            echo "<td>" . htmlspecialchars($produit['stockDispo']) . "</td>";
-            echo "</tr>";
+
+            $qte = (int)$produit['stockDispo'];
+
+            if ($qte == 0) $class = "stock-vide";
+            else if ($qte < 5) $class = "stock-faible";
+            else $class = "stock-ok";
+
+            echo "<div class='stock-card'>";
+            echo "<h3>" . htmlspecialchars($produit['nom']) . "</h3>";
+            echo "<p>Type : " . htmlspecialchars($produit['type']) . "</p>";
+            echo "<p>Prix : " . number_format($produit['prix'], 2) . " €</p>";
+            echo "<p class='stock-quantite $class'>Stock : $qte</p>";
+            echo "</div>";
         }
 
-        echo "</table>";
+        echo "</div>";
     }
 
     public function afficherDemandes($demandes) {

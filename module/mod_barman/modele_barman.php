@@ -8,13 +8,10 @@ class ModeleBarman extends Connexion {
         self::initConnexion();
     }
 
-    public function getStock() {
-        $req = self::$bdd->prepare( "SELECT p.id_produit, p.nom, p.type, p.prix, COALESCE(SUM(dA.quantite),0) - COALESCE(SUM(dV.quantite),0) AS stockDispo
-            FROM Produit p
-            LEFT JOIN detailAchat dA ON p.id_produit = dA.id_produit
-            LEFT JOIN detailVente dV ON p.id_produit = dV.id_produit
-            GROUP BY p.id_produit, p.nom, p.type, p.prix");
-        $req->execute();
+    public function getStock($idAssociation) {
+        $req = self::$bdd->prepare("SELECT  p.id_produit, p.nom, p.type, p.prix, COALESCE(c.quantite_inventaire, 0) AS stockDispo FROM Produit p JOIN Contient c ON p.id_produit = c.id_produit
+        JOIN Inventaire i ON c.id_inventaire = i.id_inventaire WHERE i.id_association = ? ORDER BY p.nom");
+        $req->execute([$idAssociation]);
         return $req->fetchAll(PDO::FETCH_ASSOC);
     }
 
