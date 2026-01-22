@@ -8,18 +8,23 @@ class VueBarman extends VueGenerique {
         parent::__construct();
     }
 
-    public function afficherStock($stock) {
 
+    public function afficherStock($stock) {
         echo "<h2>📦 Stock actuel</h2>";
         echo "<div class='stock-container'>";
 
         foreach ($stock as $produit) {
 
             $qte = (int)$produit['stockDispo'];
+            $class = "";
 
-            if ($qte == 0) $class = "stock-vide";
-            else if ($qte < 5) $class = "stock-faible";
-            else $class = "stock-ok";
+            if ($qte == 0) {
+                $class = "stock-vide";
+            } elseif ($qte < 5) {
+                $class = "stock-faible";
+            } else {
+                $class = "stock-ok";
+            }
 
             echo "<div class='stock-card'>";
             echo "<h3>" . htmlspecialchars($produit['nom']) . "</h3>";
@@ -32,30 +37,31 @@ class VueBarman extends VueGenerique {
         echo "</div>";
     }
 
+
     public function afficherDemandes($demandes) {
         echo "<h2>🛒 Demandes d'achat en attente</h2>";
 
         if (empty($demandes)) {
             echo "<p>Aucune demande en attente ✅</p>";
-            return;
-        }
+        } else {
+            foreach ($demandes as $demande) {
+                echo "<div class='card'>";
+                echo "<p><strong>Client :</strong> " . htmlspecialchars($demande['prenom']) . " " . htmlspecialchars($demande['nom']) . "</p>";
+                echo "<p><strong>Association :</strong> " . htmlspecialchars($demande['nom_asso']) . "</p>";
+                echo "<p><strong>Montant total :</strong> " . number_format($demande['montant_total'], 2) . " €</p>";
 
-        foreach ($demandes as $demande) {
-            echo "<div class='card'>";
-            echo "<p><strong>Client :</strong> " . htmlspecialchars($demande['prenom']) . " " . htmlspecialchars($demande['nom']) . "</p>";
-            echo "<p><strong>Association :</strong> " . htmlspecialchars($demande['nom_asso']) . "</p>";
-            echo "<p><strong>Montant total :</strong> " . number_format($demande['montant_total'], 2) . " €</p>";
+                echo "<form method='post' action='index.php?module=barman&action=validerDemande'>";
+                echo "<input type='hidden' name='id_demande' value='" . htmlspecialchars($demande['id_demande']) . "'>";
+                echo "<input type='submit' value='✅ Valider'>";
+                echo "</form>";
 
-            echo "<form method='post' action='index.php?module=barman&action=validerDemande'>";
-            echo "<input type='hidden' name='id_demande' value='" . htmlspecialchars($demande['id_demande']) . "'>";
-            echo "<input type='submit' value='✅ Valider'>";
-            echo "</form>";
-            echo "<form method='post' action='index.php?module=barman&action=refuserDemande'>";
-            echo "<input type='hidden' name='id_demande' value='" . htmlspecialchars($demande['id_demande']) . "'>";
-            echo "<input type='submit' value='❌ Refuser'>";
-            echo "</form>";
+                echo "<form method='post' action='index.php?module=barman&action=refuserDemande'>";
+                echo "<input type='hidden' name='id_demande' value='" . htmlspecialchars($demande['id_demande']) . "'>";
+                echo "<input type='submit' value='❌ Refuser'>";
+                echo "</form>";
 
-            echo "</div>";
+                echo "</div>";
+            }
         }
     }
 
@@ -65,22 +71,20 @@ class VueBarman extends VueGenerique {
 
         if (empty($ventes)) {
             echo "<p>Aucune vente enregistrée ✅</p>";
-            return;
-        }
+        } else {
+            echo "<div class='historique-container'>";
 
-        echo "<div class='historique-container'>";
+            foreach ($ventes as $vente) {
+                echo "<div class='historique-card'>";
+                echo "<p><strong>Date :</strong> " . htmlspecialchars($vente['date_vente']) . "</p>";
+                echo "<p><strong>Client :</strong> " . htmlspecialchars($vente['prenom']) . " " . htmlspecialchars($vente['nom']) . "</p>";
+                echo "<p><strong>Montant :</strong> " . number_format($vente['montant_total'], 2) . " €</p>";
+                echo "</div>";
+            }
 
-        foreach ($ventes as $vente) {
-            echo "<div class='historique-card'>";
-            echo "<p><strong>Date :</strong> " . htmlspecialchars($vente['date_vente']) . "</p>";
-            echo "<p><strong>Client :</strong> " . htmlspecialchars($vente['prenom']) . " " . htmlspecialchars($vente['nom']) . "</p>";
-            echo "<p><strong>Montant :</strong> " . number_format($vente['montant_total'], 2) . " €</p>";
             echo "</div>";
         }
-
-        echo "</div>";
     }
-
 
 
     public function afficherAccueil() {
@@ -94,8 +98,5 @@ class VueBarman extends VueGenerique {
         echo "<a href='index.php?module=connexion&action=deconnexion'>🚪 Déconnexion</a>";
         echo "</div>";
     }
-
-
-
 }
 ?>

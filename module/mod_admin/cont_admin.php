@@ -12,6 +12,7 @@ class ContAdmin {
         $this->modele = new ModeleAdmin();
     }
 
+
     public function accueil() {
         // Vérifier si l'utilisateur est connecté et admin
         if (!isset($_SESSION['identifiant']) || $_SESSION['id_role'] != 1) {
@@ -25,20 +26,16 @@ class ContAdmin {
     }
 
 
-
     public function accepterCreationAsso() {
-        if ($_SESSION['id_role'] != 1) exit();
+        if ($_SESSION['id_role'] != 1) {
+            exit();
+        }
 
         if (isset($_POST['id_demande']) && isset($_POST['valider'])) {
             $demande = $this->modele->getDemandeParId($_POST['id_demande']);
 
             // Créer l'association officielle
-            $idAsso = $this->modele->creerAssociation(
-                $demande['nom_asso'],
-                $demande['adresse'],
-                $demande['contact'],
-                $demande['url']
-            );
+            $idAsso = $this->modele->creerAssociation($demande['nom_asso'], $demande['adresse'], $demande['contact'], $demande['url']);
 
             // Transformer le client en gestionnaire et l'affecter
             $this->modele->validerGestionnaire($demande['id_utilisateur'], $idAsso);
@@ -57,27 +54,6 @@ class ContAdmin {
         $demandes = $this->modele->getDemandesAssociation();
         $this->vue->afficherDemandesCreationAsso($demandes);
     }
-
-    public function refuserCreationAsso() {
-        if ($_SESSION['id_role'] != 1) {
-            exit();
-        }
-
-        if (isset($_POST['id_demande'])) {
-            $this->modele->refuserDemande($_POST['id_demande']);
-            echo "<p>Demande refusée ❌</p>";
-        }
-
-        $demandes = $this->modele->getDemandesAssociation();
-        $this->vue->afficherDemandesCreationAsso($demandes);
-    }
-
-
-
-
-
-
-
 
 
     public function getVue() {

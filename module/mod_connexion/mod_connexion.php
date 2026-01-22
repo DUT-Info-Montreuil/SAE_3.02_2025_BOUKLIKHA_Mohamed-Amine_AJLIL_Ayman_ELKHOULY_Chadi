@@ -11,6 +11,7 @@ class ModConnexion {
         $this->action = isset($_GET['action']) ? $_GET['action'] : null;
     }
 
+
     public function exec() {
         switch ($this->action) {
             case 'form_inscription':
@@ -33,10 +34,9 @@ class ModConnexion {
         }
     }
 
+
     public function getAffichage() {
         return $this->controleur->getVue()->getAffichage();
     }
-
-
 }
 ?>

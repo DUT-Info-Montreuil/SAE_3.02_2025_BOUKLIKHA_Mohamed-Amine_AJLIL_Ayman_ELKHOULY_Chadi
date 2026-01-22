@@ -9,9 +9,5 @@ class VueGenerique {
     public function getAffichage() {
         return ob_get_clean();
     }
-
-
-
 }
-
 ?>

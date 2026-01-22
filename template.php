@@ -24,7 +24,7 @@
 <div class="bottom-bar"></div>
 
 <footer>
-    <p>© 2025 - Mohamed-Amine Ayman et Chadi | laBuvette   </p>
+    <p>© 2025 - Mohamed-Amine Ayman et Chadi | laBuvette</p>
 </footer>
 </body>
 </html>

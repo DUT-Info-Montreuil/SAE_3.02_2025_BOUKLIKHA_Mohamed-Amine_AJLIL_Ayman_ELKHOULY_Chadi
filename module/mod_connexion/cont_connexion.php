@@ -13,37 +13,35 @@ class ContConnexion {
         $this->modele = new ModeleConnexion();
     }
 
+
     public function form_inscription() {
         $this->vue->form_inscription();
     }
 
+
     public function inscription() {
         if (!empty($_POST['identifiant']) && !empty($_POST['nom']) && !empty($_POST['prenom']) && !empty($_POST['mdp']) && !empty($_POST['mdp_confirm'])) {
-
             $identifiant = $_POST['identifiant'];
 
             $existe = $this->modele->getUtilisateur($identifiant);
             if ($existe) {
                 echo "<p>Erreur : identifiant déjà utilisé.</p>";
-                return;
-            }
-
-            if ($_POST['mdp'] !== $_POST['mdp_confirm']) {
+            } else if ($_POST['mdp'] !== $_POST['mdp_confirm']) {
                 echo "<p>Erreur : les mots de passe ne correspondent pas.</p>";
-                return;
+            } else {
+                $nom = $_POST['nom'];
+                $prenom = $_POST['prenom'];
+                $mdp = $_POST['mdp'];
+                $hash = password_hash($mdp, PASSWORD_DEFAULT);
+                $this->modele->ajoutUtilisateur($identifiant, $nom, $prenom, $hash);
+                echo "<p>Inscription réussie !</p>";
             }
 
-
-            $nom = $_POST['nom'];
-            $prenom = $_POST['prenom'];
-            $mdp = $_POST['mdp'];
-            $hash = password_hash($mdp, PASSWORD_DEFAULT);
-            $this->modele->ajoutUtilisateur($identifiant, $nom, $prenom, $hash);
-            echo "<p>Inscription réussie !</p>";
         } else {
             echo "<p>Erreur : données manquantes.</p>";
         }
     }
+
 
     public function form_connexion() {
         if (isset($_SESSION['identifiant'])) {
@@ -54,57 +52,66 @@ class ContConnexion {
         }
     }
 
+
     public function connexion() {
-        if (isset($_POST['identifiant']) && isset($_POST['mdp']) ) {
+        if (isset($_POST['identifiant']) && isset($_POST['mdp'])) {
             $identifiant = $_POST['identifiant'];
             $mdp = $_POST['mdp'];
             $utilisateur = $this->modele->getUtilisateur($identifiant);
-            $id_utilisateur = $utilisateur['id_utilisateur'];
-            $hash = $utilisateur['mdp'];
 
-            if (isset($utilisateur) && password_verify($mdp, $hash)) {
-                $asso = $this->modele->getAssociationUtilisateur($id_utilisateur);
-                $_SESSION['id_utilisateur'] = $id_utilisateur;
-                $_SESSION['identifiant'] = $identifiant;
-                $_SESSION['nom'] = $utilisateur['nom'];
-                $_SESSION['prenom'] = $utilisateur['prenom'];
-                $_SESSION['id_role'] = $utilisateur['id_role'];
-                if ($asso) {
-                    $_SESSION['id_association'] = $asso['id_association'];
-                }
-                if ($utilisateur['id_role'] == 1) {
-                    header("Location: index.php?module=admin"); // redirige vers page admin
-                }
-                else if ($utilisateur['id_role'] == 2){
-                    header("Location: index.php?module=gestionnaire"); // redirige vers page gestionnaire
-                }
-                else if ($utilisateur['id_role'] == 3){
-                    header("Location: index.php?module=barman"); // redirige vers page barman
-                }
-                else if ($utilisateur['id_role'] == 4){
-                    header("Location: index.php?module=client"); // redirige vers page client
-                }
-                else {
-                    echo "<p>Connexion réussie ! Bienvenue, <b>" . htmlspecialchars($utilisateur['prenom']) . " " . htmlspecialchars($utilisateur['nom']) .
-                        "</b></p>";
+            if ($utilisateur !== false) { // Vérification que l'utilisateur existe
+                $id_utilisateur = $utilisateur['id_utilisateur'];
+                $hash = $utilisateur['mdp'];
+
+                if (password_verify($mdp, $hash)) {
+                    $asso = $this->modele->getAssociationUtilisateur($id_utilisateur);
+                    $_SESSION['id_utilisateur'] = $id_utilisateur;
+                    $_SESSION['identifiant'] = $identifiant;
+                    $_SESSION['nom'] = $utilisateur['nom'];
+                    $_SESSION['prenom'] = $utilisateur['prenom'];
+                    $_SESSION['id_role'] = $utilisateur['id_role'];
+
+                    if ($asso !== false) {
+                        $_SESSION['id_association'] = $asso['id_association'];
+                    }
+
+                    // Redirection selon le rôle
+                    if ($utilisateur['id_role'] == 1) {
+                        header("Location: index.php?module=admin");
+                        exit();
+                    } else if ($utilisateur['id_role'] == 2) {
+                        header("Location: index.php?module=gestionnaire");
+                        exit();
+                    } else if ($utilisateur['id_role'] == 3) {
+                        header("Location: index.php?module=barman");
+                        exit();
+                    } else if ($utilisateur['id_role'] == 4) {
+                        header("Location: index.php?module=client");
+                        exit();
+                    } else {
+                        echo "<p>Connexion réussie ! Bienvenue, <b>" . htmlspecialchars($utilisateur['prenom']) . " " . htmlspecialchars($utilisateur['nom']) . "</b></p>";
+                    }
+                } else {
+                    echo "<p>Erreur : identifiant ou mot de passe incorrect.</p>";
                 }
             } else {
-                echo "<p>Erreur : identifiants incorrects ou données manquantes.</p>";
+                echo "<p>Erreur : identifiant ou mot de passe incorrect.</p>";
             }
         } else {
-            echo "<p>Erreur : données manquantes.</p>";
+            echo "<p>Erreur : veuillez remplir tous les champs.</p>";
         }
     }
+
+
 
     public function deconnexion() {
         unset($_SESSION['identifiant']);
         $this->vue->form_connexion();
     }
 
+
     public function getVue() {
         return $this->vue;
     }
-
-
 }
 ?>

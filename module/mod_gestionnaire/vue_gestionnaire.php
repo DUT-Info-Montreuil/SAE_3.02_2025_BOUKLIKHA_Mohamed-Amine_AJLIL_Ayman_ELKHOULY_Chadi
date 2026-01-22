@@ -9,7 +9,6 @@ class VueGestionnaire extends VueGenerique {
     }
 
 
-
     public function afficherValidationClients($demandes) {
         echo "<div class='card'><h2>Demandes d’adhésion</h2>";
 
@@ -25,14 +24,11 @@ class VueGestionnaire extends VueGenerique {
             echo "<input type='submit' name='refuser' value='❌ Refuser'>";
             echo "</form><hr>";
         }
-
         echo "</div>";
     }
 
 
-
     public function afficherSiteAssociation($association) {
-
         echo "<div class='card'>";
         echo "<h2>Url de mon association</h2>";
 
@@ -43,13 +39,8 @@ class VueGestionnaire extends VueGenerique {
         } else {
             echo "<p>Aucune URL disponible pour votre association.</p>";
         }
-
         echo "</div>";
     }
-
-
-
-
 
 
     public function formCreationBarman() {
@@ -63,11 +54,12 @@ class VueGestionnaire extends VueGenerique {
         echo "<label>Prénom :</label> <input type='text' name='prenom'><br>";
         echo "<label>Mot de passe :</label> <input type='password' name='mdp'><br>";
 
-        echo "<input type='submit' value='Créer le barman'>";
+        echo "<input type='submit' name='creer' value='Créer le barman'>";
 
         echo "</form>";
         echo "</div>";
     }
+
 
     public function formCreationFournisseur() {
         echo "<div class='card'>";
@@ -83,6 +75,7 @@ class VueGestionnaire extends VueGenerique {
         echo "</form>";
         echo "</div>";
     }
+
 
     public function formCreationProduit() {
         echo "<div class='card'>";
@@ -101,11 +94,12 @@ class VueGestionnaire extends VueGenerique {
         echo "<label>Prix :</label> <input type='number' step='0.01' name='prix'><br>";
         echo "<label>Image :</label> <input type='file' name='image'><br>";
 
-        echo "<input type='submit' value='Créer le produit'>";
+        echo "<input type='submit' name='creer' value='Créer le produit'>";
 
         echo "</form>";
         echo "</div>";
     }
+
 
     public function formAchat($produits, $fournisseurs, $panier = []) {
         echo "<div class='card'><h2>Acheter des produits</h2>";
@@ -153,6 +147,7 @@ class VueGestionnaire extends VueGenerique {
         echo "</div>";
     }
 
+
     public function afficherSolde($solde) {
         echo "<div class='card'>";
         echo "<h2>Solde de l'association</h2>";
@@ -161,7 +156,8 @@ class VueGestionnaire extends VueGenerique {
         echo "</div>";
     }
 
-    public function formInventaire($produits, $contenu, $inventaireEnCours = false) {
+
+    public function formInventaire($produits, $contenu) {
     echo "<div class='card'><h2>Inventaire</h2>";
 
     // Formulaire Ajouter / Modifier
@@ -185,7 +181,6 @@ class VueGestionnaire extends VueGenerique {
         }
         echo "</ul>";
     }
-
         echo "</div>";
     }
 
@@ -217,8 +212,6 @@ class VueGestionnaire extends VueGenerique {
     }
 
 
-
-
     public function afficherAccueil() {
         echo "<div class='card'>";
         echo "<h1>Bienvenue Gestionnaire " . htmlspecialchars($_SESSION['prenom']) . " " . htmlspecialchars($_SESSION['nom']) . "</h1>";
@@ -228,17 +221,11 @@ class VueGestionnaire extends VueGenerique {
         echo "<a href='index.php?module=gestionnaire&action=creerBarman'>👤 Créer un barman</a><br><br>";
         echo "<a href='index.php?module=gestionnaire&action=creerFournisseur'>📦 Créer un fournisseur</a><br><br>";
         echo "<a href='index.php?module=gestionnaire&action=creerProduit'>🍾 Créer un produit</a><br><br>";
-        echo "<a href='index.php?module=gestionnaire&action=voirBilan'>💰 Consulter le solde de l'association</a><br><br>";
         echo "<a href='index.php?module=gestionnaire&action=acheterProduit'>🛒 Acheter des produits</a><br><br>";
+        echo "<a href='index.php?module=gestionnaire&action=voirBilan'>💰 Consulter le solde de l'association</a><br><br>";
         echo "<a href='index.php?module=gestionnaire&action=inventaire'>📊 Gérer l'inventaire</a><br><br>";
         echo "<a href='index.php?module=connexion&action=deconnexion'>🚪 Déconnexion</a>";
         echo "</div>";
     }
-
-
-
-
 }
-
-
 ?>

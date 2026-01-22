@@ -8,18 +8,12 @@ class ModeleGestionnaire extends Connexion {
         self::initConnexion();
     }
 
-    public function getAssociations() {
-        $req = self::$bdd->prepare("SELECT * FROM Association");
-        $req->execute();
-        return $req->fetchAll();
-    }
 
     public function getAssociationGestionnaireURL($idUtilisateur) {
         $req = self::$bdd->prepare("SELECT a.id_association, a.nom_asso, a.url FROM Association a JOIN Affectation af ON a.id_association = af.id_association WHERE af.id_utilisateur = ? AND af.id_role = 2");
         $req->execute([$idUtilisateur]);
         return $req->fetch(PDO::FETCH_ASSOC);
     }
-
 
 
     public function getDemandesClients($idAssociation) {
@@ -46,17 +40,10 @@ class ModeleGestionnaire extends Connexion {
         }
     }
 
+
     public function refuserDemandeClient($idDemande) {
         $req = self::$bdd->prepare("DELETE FROM DemandeClient WHERE id_demande = ?");
         $req->execute([$idDemande]);
-    }
-
-
-
-    public function getAssociationParId($idAssociation) {
-        $req = self::$bdd->prepare("SELECT * FROM Association WHERE id_association = ?");
-        $req->execute([$idAssociation]);
-        return $req->fetch(PDO::FETCH_ASSOC);
     }
 
 
@@ -67,11 +54,13 @@ class ModeleGestionnaire extends Connexion {
         return self::$bdd->lastInsertId();
     }
 
+
     public function creerFournisseur($nom, $telephone) {
         $req = self::$bdd->prepare("INSERT INTO Fournisseur (nom, telephone) VALUES (?, ?)");
         $req->execute([$nom, $telephone]);
         return self::$bdd->lastInsertId();
     }
+
 
     public function creerProduit($nom, $type, $prix, $cheminImage) {
         $req = self::$bdd->prepare("INSERT INTO Produit (nom, type, prix, image) VALUES (?, ?, ?, ?)");
@@ -79,11 +68,13 @@ class ModeleGestionnaire extends Connexion {
         return self::$bdd->lastInsertId();
     }
 
+
     public function getProduit($nom) {
         $req = self::$bdd->prepare("SELECT * FROM Produit WHERE nom = ?");
         $req->execute([$nom]);
         return $req->fetch(PDO::FETCH_ASSOC);
     }
+
 
     public function getFournisseurParNom($nom) {
         $req = self::$bdd->prepare("SELECT * FROM Fournisseur WHERE nom = ?");
@@ -157,11 +148,11 @@ class ModeleGestionnaire extends Connexion {
     }
 
 
-
     public function affecterBarman($idUtilisateur, $idAssociation) {
         $req = self::$bdd->prepare("INSERT INTO Affectation (id_utilisateur, id_association, id_role, solde) VALUES (?, ?, 3, 0)");
         $req->execute([$idUtilisateur, $idAssociation]);
     }
+
 
     public function getRecettesJour($idAssociation, $date){
         // Si aucune date passée, on prend aujourd'hui
@@ -169,12 +160,7 @@ class ModeleGestionnaire extends Connexion {
             $date = date('Y-m-d');
         }
 
-        $req = self::$bdd->prepare("
-        SELECT SUM(dv.quantite * p.prix) AS total
-        FROM detailVente dv
-        JOIN Vente v ON dv.id_vente = v.id_vente
-        JOIN Produit p ON dv.id_produit = p.id_produit
-        JOIN Affectation af ON v.id_utilisateur = af.id_utilisateur
+        $req = self::$bdd->prepare("SELECT SUM(dv.quantite * p.prix) AS total FROM detailVente dv JOIN Vente v ON dv.id_vente = v.id_vente JOIN Produit p ON dv.id_produit = p.id_produit JOIN Affectation af ON v.id_utilisateur = af.id_utilisateur
         WHERE af.id_association = ? AND DATE(v.date_vente) = ?");
         $req->execute([$idAssociation, $date]);
         $total = $req->fetchColumn();
@@ -191,11 +177,7 @@ class ModeleGestionnaire extends Connexion {
             $date = date('Y-m-d');
         }
 
-        $req = self::$bdd->prepare("
-        SELECT SUM(prix_achat) AS total
-        FROM detailAchat da
-        JOIN Achat a ON da.id_achat = a.id_achat
-        WHERE a.id_association = ? AND DATE(a.date_achat) = ?");
+        $req = self::$bdd->prepare("SELECT SUM(prix_achat) AS total FROM detailAchat da JOIN Achat a ON da.id_achat = a.id_achat WHERE a.id_association = ? AND DATE(a.date_achat) = ?");
         $req->execute([$idAssociation, $date]);
         $total = $req->fetchColumn();
 
@@ -205,18 +187,13 @@ class ModeleGestionnaire extends Connexion {
         return $total;
     }
 
-// Recettes pour un mois donné (YYYY-MM)
+
     public function getRecettesMois($idAssociation, $mois) {
         if ($mois == null || $mois == '') {
             $mois = date('Y-m');
         }
 
-        $req = self::$bdd->prepare("
-        SELECT SUM(dv.quantite * p.prix) AS total
-        FROM detailVente dv
-        JOIN Vente v ON dv.id_vente = v.id_vente
-        JOIN Produit p ON dv.id_produit = p.id_produit
-        JOIN Affectation af ON v.id_utilisateur = af.id_utilisateur
+        $req = self::$bdd->prepare("SELECT SUM(dv.quantite * p.prix) AS total FROM detailVente dv JOIN Vente v ON dv.id_vente = v.id_vente JOIN Produit p ON dv.id_produit = p.id_produit JOIN Affectation af ON v.id_utilisateur = af.id_utilisateur
         WHERE af.id_association = ? AND DATE_FORMAT(v.date_vente, '%Y-%m') = ?");
         $req->execute([$idAssociation, $mois]);
         $total = $req->fetchColumn();
@@ -233,11 +210,7 @@ class ModeleGestionnaire extends Connexion {
             $mois = date('Y-m');
         }
 
-        $req = self::$bdd->prepare("
-        SELECT SUM(prix_achat) AS total
-        FROM detailAchat da
-        JOIN Achat a ON da.id_achat = a.id_achat
-        WHERE a.id_association = ? AND DATE_FORMAT(a.date_achat, '%Y-%m') = ?");
+        $req = self::$bdd->prepare("SELECT SUM(prix_achat) AS total FROM detailAchat da JOIN Achat a ON da.id_achat = a.id_achat WHERE a.id_association = ? AND DATE_FORMAT(a.date_achat, '%Y-%m') = ?");
         $req->execute([$idAssociation, $mois]);
         $total = $req->fetchColumn();
 
@@ -250,9 +223,10 @@ class ModeleGestionnaire extends Connexion {
 
 
 
+
+
     /* ================= INVENTAIRE ================= */
 
-    // Récupérer inventaire ou null si pas créé
     public function getInventaireAssoc($idAssociation) {
         $req = self::$bdd->prepare("SELECT id_inventaire FROM Inventaire WHERE id_association = ?");
         $req->execute([$idAssociation]);
@@ -264,18 +238,21 @@ class ModeleGestionnaire extends Connexion {
         }
     }
 
-    // Créer inventaire
+
     public function creerInventaire($idAssociation) {
         $req = self::$bdd->prepare("INSERT INTO Inventaire (date_inventaire, id_association) VALUES (NOW(), ?)");
         $req->execute([$idAssociation]);
         return self::$bdd->lastInsertId();
     }
 
+
     public function upsertContient($idInventaire, $idProduit, $quantite) {
-        if (!$idProduit) return; // sécurité
-        $req = self::$bdd->prepare("INSERT INTO Contient (id_inventaire, id_produit, quantite_inventaire) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE quantite_inventaire = ?");
-        $req->execute([$idInventaire, $idProduit, $quantite, $quantite]);
+        if ($idProduit != null) {
+            $req = self::$bdd->prepare("INSERT INTO Contient (id_inventaire, id_produit, quantite_inventaire) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE quantite_inventaire = ?");
+            $req->execute([$idInventaire, $idProduit, $quantite, $quantite]);
+        }
     }
+
 
     public function getTousLesProduits() {
         $req = self::$bdd->prepare("SELECT id_produit, nom FROM Produit");
@@ -283,22 +260,17 @@ class ModeleGestionnaire extends Connexion {
         return $req->fetchAll(PDO::FETCH_ASSOC);
     }
 
+
     public function getContenuInventaire($idInventaire) {
         $req = self::$bdd->prepare("SELECT p.nom, c.quantite_inventaire AS quantite FROM Contient c JOIN Produit p ON c.id_produit = p.id_produit WHERE c.id_inventaire = ?");
         $req->execute([$idInventaire]);
         return $req->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // + quand on achète
+
     public function ajouterStock($idInventaire, $idProduit, $quantite) {
         $req = self::$bdd->prepare("INSERT INTO Contient (id_inventaire, id_produit, quantite_inventaire) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE quantite_inventaire = quantite_inventaire + ?");
         $req->execute([$idInventaire, $idProduit, $quantite, $quantite]);
     }
-
-
-
-
 }
-
-
 ?>

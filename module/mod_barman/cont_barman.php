@@ -41,52 +41,50 @@ class ContBarman {
     public function validerDemande() {
         if (!isset($_SESSION['id_role']) || $_SESSION['id_role'] != 3) {
             echo "<p>Accès refusé</p>";
-            return;
-        }
+        } else {
 
-        if (isset($_POST['id_demande'])) {
-            $idDemande = (int)$_POST['id_demande'];
-            $demande = $this->modele->getDemandeById($idDemande);
-            $idUtilisateur = $demande['id_utilisateur'];
-            $idAssociation = $demande['id_association'];
-            $montantTotal = $demande['montant_total'];
+            if (isset($_POST['id_demande'])) {
+                $idDemande = (int)$_POST['id_demande'];
+                $demande = $this->modele->getDemandeById($idDemande);
+                $idUtilisateur = $demande['id_utilisateur'];
+                $idAssociation = $demande['id_association'];
+                $montantTotal = $demande['montant_total'];
 
-            // Récupération du panier temporaire
-            $panier = $_SESSION['demande_temp'][$idUtilisateur] ?? [];
+                if (isset($_SESSION['demande_temp'][$idUtilisateur])) {
+                    $panier = $_SESSION['demande_temp'][$idUtilisateur];
+                } else {
+                    $panier = [];
+                }
 
-            // Vérification du solde du client
-            $solde = $this->modele->getSoldeClient($idUtilisateur, $idAssociation);
-            if ($solde < $montantTotal) {
-                echo "<p>❌ Solde insuffisant pour valider cette demande.</p>";
-                $this->gestionDemandes();
-                return;
-            }
+                $solde = $this->modele->getSoldeClient($idUtilisateur, $idAssociation);
 
-            // Vérification du stock disponible
-            $stockOk = true;
-            foreach ($panier as $item) {
-                $stockProduit = $this->modele->getStockProduit($idAssociation, $item['id_produit']);
-                if ($item['quantite'] > $stockProduit) {
-                    echo "<p>❌ Stock insuffisant pour : " . htmlspecialchars($item['nom']) . "</p>";
-                    $stockOk = false;
+                if ($solde < $montantTotal) {
+                    echo "<p>❌ Solde insuffisant pour valider cette demande.</p>";
+                } else {
+                    $stockOk = true;
+
+                    foreach ($panier as $item) {
+                        $stockProduit = $this->modele->getStockProduit($idAssociation, $item['id_produit']);
+
+                        if ($item['quantite'] > $stockProduit) {
+                            echo "<p>❌ Stock insuffisant pour : " . htmlspecialchars($item['nom']) . "</p>";
+                            $stockOk = false;
+                        }
+                    }
+
+                    if ($stockOk) {
+                        $this->modele->debiterClient($idUtilisateur, $idAssociation, $montantTotal);
+                        $idVente = $this->modele->creerVente($idUtilisateur, $montantTotal);
+                        $this->modele->insererDetailVente($idVente, $panier);
+                        $this->modele->mettreAJourStock($panier, $idAssociation);
+                        $this->modele->crediterGestionnaire($idAssociation, $montantTotal);
+                        $this->modele->supprimerDemande($idDemande);
+                        $this->modele->supprimerPanierTemp($idUtilisateur);
+
+                        echo "<p>✅ Demande validée</p>";
+                    }
                 }
             }
-
-            if (!$stockOk) {
-                $this->gestionDemandes();
-                return;
-            }
-
-            // Tout est OK → on valide la demande
-            $this->modele->debiterClient($idUtilisateur, $idAssociation, $montantTotal);
-            $idVente = $this->modele->creerVente($idUtilisateur, $montantTotal);
-            $this->modele->insererDetailVente($idVente, $panier);
-            $this->modele->mettreAJourStock($panier, $idAssociation);
-            $this->modele->crediterGestionnaire($idAssociation, $montantTotal);
-            $this->modele->supprimerDemande($idDemande);
-            $this->modele->supprimerPanierTemp($idUtilisateur);
-
-            echo "<p>✅ Demande validée</p>";
         }
 
         $this->gestionDemandes();
@@ -96,24 +94,22 @@ class ContBarman {
     public function refuserDemande() {
         if (!isset($_SESSION['id_role']) || $_SESSION['id_role'] != 3) {
             echo "<p>Accès refusé</p>";
-            return;
+        } else {
+            if (isset($_POST['id_demande'])) {
+                $idDemande = (int)$_POST['id_demande'];
+
+                $demande = $this->modele->getDemandeById($idDemande);
+                $idUtilisateur = $demande['id_utilisateur'];
+
+                $this->modele->supprimerDemande($idDemande);
+                unset($_SESSION['demande_temp'][$idUtilisateur]);
+
+                echo "<p>❌ Demande refusée</p>";
+            }
         }
-
-        if (isset($_POST['id_demande'])) {
-            $idDemande = (int)$_POST['id_demande'];
-
-            $demande = $this->modele->getDemandeById($idDemande);
-            $idUtilisateur = $demande['id_utilisateur'];
-
-            // suppression simple
-            $this->modele->supprimerDemande($idDemande);
-            unset($_SESSION['demande_temp'][$idUtilisateur]);
-
-            echo "<p>❌ Demande refusée</p>";
-        }
-
         $this->gestionDemandes();
     }
+
 
 
     public function voirHistorique() {

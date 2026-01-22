@@ -9,6 +9,7 @@ class VueConnexion extends VueGenerique {
         parent::__construct();
     }
 
+
     public function form_inscription() {
         echo "<div class='card'>";
         echo "<h2>Inscription</h2>";
@@ -23,6 +24,7 @@ class VueConnexion extends VueGenerique {
         echo "</div>";
     }
 
+
     public function form_connexion() {
         echo "<div class='card'>";
         echo "<h2>Connexion</h2>";
@@ -36,8 +38,8 @@ class VueConnexion extends VueGenerique {
         echo "<div class='link-center'><a href='#'>Mot de passe oublié ?</a></div>";
         echo "<div class='link-center'><p>Pas de compte ? <a href='index.php?module=connexion&action=form_inscription'>Créer un compte</a></p></div>";
         echo "</div>";
-
     }
+
 
 }
 ?>

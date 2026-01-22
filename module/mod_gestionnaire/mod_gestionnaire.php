@@ -8,15 +8,17 @@ class ModGestionnaire {
 
     public function __construct() {
         $this->controleur = new ContGestionnaire();
-        $this->action = isset($_GET['action']) ? $_GET['action'] : null;
+
+        if (isset($_GET['action'])) {
+            $this->action = $_GET['action'];
+        } else {
+            $this->action = null;
+        }
     }
+
 
     public function exec() {
         switch ($this->action) {
-            case 'accueil':
-                $this->controleur->accueil();
-                break;
-
             case 'validationClients':
                 $this->controleur->validationClients();
                 break;
@@ -35,38 +37,30 @@ class ModGestionnaire {
             case 'inventaire':
                 $this->controleur->gererInventaire();
                 break;
-
             case 'acheterProduit':
                 $this->controleur->acheterProduit();
                 break;
-
             case 'ajouterAuPanier':
                 $this->controleur->ajouterAuPanier();
                 break;
-
             case 'supprimerDuPanier':
                 $this->controleur->supprimerDuPanier();
                 break;
-
             case 'validerPanier':
                 $this->controleur->validerPanier();
                 break;
-
             case 'voirSolde':
                 $this->controleur->voirSolde();
                 break;
             case 'voirBilan':
                 $this->controleur->voirBilan();
                 break;
-
-
-
-
             default:
                 $this->controleur->accueil();
                 break;
         }
     }
+
 
     public function getAffichage() {
         return $this->controleur->getVue()->getAffichage();

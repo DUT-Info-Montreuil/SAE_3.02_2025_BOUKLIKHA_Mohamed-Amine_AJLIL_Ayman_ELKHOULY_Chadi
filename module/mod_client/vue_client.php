@@ -8,7 +8,6 @@ class VueClient extends VueGenerique {
     }
 
 
-
     public function formDemandeCreationAsso() {
         echo "<div class='card'>";
         echo "<h2>Faire une demande pour créer votre association</h2>";
@@ -29,7 +28,6 @@ class VueClient extends VueGenerique {
 
 
     public function formRecharger() {
-
         echo "<div class='card'>";
         echo "<h2>Recharger mon compte</h2>";
 
@@ -49,11 +47,11 @@ class VueClient extends VueGenerique {
         echo "</form>";
 
         echo "</div>";
+        echo "<a href='index.php?module=client&action=accueilAsso'>⬅ Retour</a>";
     }
 
 
     public function afficherChoixAssociation($associations) {
-
         echo "<div class='card'>";
         echo "<h2>Choisir une association</h2>";
 
@@ -64,9 +62,9 @@ class VueClient extends VueGenerique {
             echo "<input type='submit' value='Demander à rejoindre'>";
             echo "</form><hr>";
         }
-
         echo "</div>";
     }
+
 
     public function afficherMesAssociations($associations) {
         echo "<div class='card'>";
@@ -83,10 +81,8 @@ class VueClient extends VueGenerique {
                 echo "</form><hr>";
             }
         }
-
         echo "</div>";
     }
-
 
 
     public function afficherAccueilAsso($asso, $solde) {
@@ -98,7 +94,7 @@ class VueClient extends VueGenerique {
         echo "<a href='index.php?module=client&action=recharger'>Recharger</a><br>";
         echo "<a href='index.php?module=client&action=historique'>Historique</a><br>";
         echo "<a href='index.php?module=client&action=mesDemandesAchat'>🛒 Mes demandes d'achat en attente</a><br>";
-        echo "<a href='index.php?module=client&action=qrcode'>QR Code</a><br>";
+        echo "<a href='index.php?module=client&action=accueilAsso'>QR Code</a><br>";
         echo"<br>";
         echo "<a href='index.php?module=client&action=mesAssociations'>Mes associations</a><br>";
         echo " <br> ";
@@ -109,26 +105,24 @@ class VueClient extends VueGenerique {
         echo "</div>";
     }
 
+
     public function afficherMesDemandesAchat($demandes) {
         echo "<div class='card'>";
         echo "<h2>Mes demandes d'achat en attente</h2>";
 
         if (empty($demandes)) {
             echo "<p>Aucune demande en attente ✅</p>";
-            echo "</div>";
-            return;
+        } else {
+            foreach ($demandes as $demande) {
+                echo "<p>Montant : " . number_format($demande['montant_total'], 2) . " €<br>";
+            }
         }
-
-        foreach ($demandes as $demande) {
-            echo "<p>Montant : " . number_format($demande['montant_total'], 2) . " €<br>";
-        }
-
         echo "</div>";
+        echo "<a href='index.php?module=client&action=accueilAsso'>⬅ Retour</a>";
     }
 
 
     public function formAchatClient($produits, $panier = []) {
-
         echo "<h2>🛒 Boutique</h2>";
         echo "<div class='stock-container'>";
 
@@ -138,12 +132,11 @@ class VueClient extends VueGenerique {
             echo "<p>". number_format($p['prix'],2) ." €</p>";
             // image
 
-            echo "
-        <form method='post' action='index.php?module=client&action=ajouterAuPanierClient' class='stock-actions'>
+            echo "<form method='post' action='index.php?module=client&action=ajouterAuPanierClient' class='stock-actions'>
             <input type='hidden' name='id_produit' value='{$p['id_produit']}'>
             <button name='quantite' value='-1'>−</button>
             <button name='quantite' value='1'>+</button>
-        </form>";
+            </form>";
 
             echo "</div>";
         }
@@ -155,66 +148,59 @@ class VueClient extends VueGenerique {
 
         if (empty($panier)) {
             echo "<p>Panier vide</p>";
-            return;
-        }
+        } else {
 
-        $total = 0;
-        foreach ($panier as $key => $item) {
-            $sousTotal = $item['prix'] * $item['quantite'];
-            $total += $sousTotal;
+            $total = 0;
+            foreach ($panier as $key => $item) {
+                $sousTotal = $item['prix'] * $item['quantite'];
+                $total += $sousTotal;
 
-            echo "<div class='card'>";
-            echo htmlspecialchars($item['nom']) . " x " . $item['quantite'] . " = " . number_format($sousTotal,2) . " €";
-            echo "
-        <form method='post' action='index.php?module=client&action=supprimerDuPanierClient'>
-            <input type='hidden' name='key' value='$key'>
-            <button>Retirer</button>
-        </form>";
-            echo "</div>";
-        }
+                echo "<div class='card'>";
+                echo htmlspecialchars($item['nom']) . " x " . $item['quantite'] . " = " . number_format($sousTotal,2) . " €";
+                echo "
+            <form method='post' action='index.php?module=client&action=supprimerDuPanierClient'>
+                <input type='hidden' name='key' value='$key'>
+                <button>Retirer</button>
+            </form>";
+                echo "</div>";
+            }
 
-        echo "<h3>Total : ". number_format($total,2) ." €</h3>";
-
-        echo "<form method='post' action='index.php?module=client&action=validerPanierClient'>
+            echo "<h3>Total : ". number_format($total,2) ." €</h3>";
+            echo "<form method='post' action='index.php?module=client&action=validerPanierClient'>
             <button>💳 Payer</button>
           </form>";
+        }
+        echo "<a href='index.php?module=client&action=accueilAsso'>⬅ Retour</a>";
     }
 
 
     public function afficherHistorique($lignes) {
-
         echo "<h2>📜 Historique de mes commandes</h2>";
 
         if (empty($lignes)) {
             echo "<p>Aucune commande validée pour le moment.</p>";
-            return;
-        }
+        } else {
+            $courante = null;
+            foreach ($lignes as $l) {
+                // nouvelle commande
+                if ($courante != $l['id_vente']) {
+                    if ($courante !== null) {
+                        echo "</div>";
+                    }
 
-        $courante = null;
+                    echo "<div class='card'>";
+                    echo "<h3>Commande du " . date("d/m H:i", strtotime($l['date_vente'])) . "</h3>";
+                    echo "<p>Total : " . number_format($l['montant_total'], 2) . " €</p>";
+                    echo "<span>🟢 Validée</span><hr>";
 
-        foreach ($lignes as $l) {
-
-            // nouvelle commande
-            if ($courante != $l['id_vente']) {
-                if ($courante !== null) echo "</div>";
-
-                echo "<div class='card'>";
-                echo "<h3>Commande du " . date("d/m H:i", strtotime($l['date_vente'])) . "</h3>";
-                echo "<p>Total : " . number_format($l['montant_total'], 2) . " €</p>";
-                echo "<span style='color:green'>🟢 Validée</span><hr>";
-
-                $courante = $l['id_vente'];
+                    $courante = $l['id_vente'];
+                }
+                echo "<p>" . htmlspecialchars($l['nom']) . " × " . $l['quantite'] . " — " . number_format($l['prix_unitaire'], 2) . " €</p>";
             }
-
-            echo "<p>" . htmlspecialchars($l['nom']) . " × " . $l['quantite'] .
-                " — " . number_format($l['prix_unitaire'],2) . " €</p>";
+            echo "</div>";
         }
-
-        echo "</div>";
+        echo "<a href='index.php?module=client&action=accueilAsso'>⬅ Retour</a>";
     }
-
-
-
 
 
     public function afficherAccueil() {
@@ -227,8 +213,6 @@ class VueClient extends VueGenerique {
         echo "<a href='index.php?module=connexion&action=deconnexion'>Déconnexion</a>";
         echo "</div>";
     }
-
-
 
 
 }

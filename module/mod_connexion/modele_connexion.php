@@ -15,6 +15,7 @@ class ModeleConnexion extends Connexion {
         return $req->fetch(PDO::FETCH_ASSOC);
     }
 
+
     public function getAssociationUtilisateur($idUtilisateur) {
         $req = self::$bdd->prepare("SELECT id_association FROM Affectation WHERE id_utilisateur = ?");
         $req->execute([$idUtilisateur]);

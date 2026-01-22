@@ -8,14 +8,17 @@ class ModAdmin {
 
     public function __construct() {
         $this->controleur = new ContAdmin();
-        $this->action = isset($_GET['action']) ? $_GET['action'] : null;
+
+        if (isset($_GET['action'])) {
+            $this->action = $_GET['action'];
+        } else {
+            $this->action = null;
+        }
     }
+
 
     public function exec() {
         switch ($this->action) {
-            case 'accueil':
-                $this->controleur->accueil();
-                break;
             case 'accepterCreationAsso':
                 $this->controleur->accepterCreationAsso();
                 break;
@@ -24,6 +27,7 @@ class ModAdmin {
                 break;
         }
     }
+
 
     public function getAffichage() {
         return $this->controleur->getVue()->getAffichage();
