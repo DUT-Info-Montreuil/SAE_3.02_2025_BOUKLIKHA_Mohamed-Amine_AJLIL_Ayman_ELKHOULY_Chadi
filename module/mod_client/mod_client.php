@@ -52,9 +52,9 @@ class ModClient {
             case 'mesDemandesAchat':
                 $this->controleur->mesDemandesAchat();
                 break;
-
-
-
+            case 'historique':
+                $this->controleur->historique();
+                break;
             default:
                 $this->controleur->accueil();
         }

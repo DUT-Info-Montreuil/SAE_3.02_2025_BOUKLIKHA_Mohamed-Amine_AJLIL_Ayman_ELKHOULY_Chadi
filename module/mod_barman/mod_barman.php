@@ -29,6 +29,10 @@ class ModBarman {
             case 'refuserDemande':
                 $this->controleur->refuserDemande();
                 break;
+            case 'historique':
+                $this->controleur->voirHistorique();
+                break;
+
             default:
                 $this->controleur->accueil();
                 break;

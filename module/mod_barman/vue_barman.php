@@ -9,20 +9,27 @@ class VueBarman extends VueGenerique {
     }
 
     public function afficherStock($stock) {
+
         echo "<h2>📦 Stock actuel</h2>";
-        echo "<table>";
-        echo "<tr><th>Produit</th><th>Type</th><th>Prix</th><th>Quantité disponible</th></tr>";
+        echo "<div class='stock-container'>";
 
         foreach ($stock as $produit) {
-            echo "<tr>";
-            echo "<td>" . htmlspecialchars($produit['nom']) . "</td>";
-            echo "<td>" . htmlspecialchars($produit['type']) . "</td>";
-            echo "<td>" . number_format($produit['prix'],2) . " €</td>";
-            echo "<td>" . htmlspecialchars($produit['stockDispo']) . "</td>";
-            echo "</tr>";
+
+            $qte = (int)$produit['stockDispo'];
+
+            if ($qte == 0) $class = "stock-vide";
+            else if ($qte < 5) $class = "stock-faible";
+            else $class = "stock-ok";
+
+            echo "<div class='stock-card'>";
+            echo "<h3>" . htmlspecialchars($produit['nom']) . "</h3>";
+            echo "<p>Type : " . htmlspecialchars($produit['type']) . "</p>";
+            echo "<p>Prix : " . number_format($produit['prix'], 2) . " €</p>";
+            echo "<p class='stock-quantite $class'>Stock : $qte</p>";
+            echo "</div>";
         }
 
-        echo "</table>";
+        echo "</div>";
     }
 
     public function afficherDemandes($demandes) {
@@ -53,6 +60,26 @@ class VueBarman extends VueGenerique {
     }
 
 
+    public function afficherHistorique($ventes) {
+        echo "<h2>📜 Historique des ventes</h2>";
+
+        if (empty($ventes)) {
+            echo "<p>Aucune vente enregistrée ✅</p>";
+            return;
+        }
+
+        echo "<div class='historique-container'>";
+
+        foreach ($ventes as $vente) {
+            echo "<div class='historique-card'>";
+            echo "<p><strong>Date :</strong> " . htmlspecialchars($vente['date_vente']) . "</p>";
+            echo "<p><strong>Client :</strong> " . htmlspecialchars($vente['prenom']) . " " . htmlspecialchars($vente['nom']) . "</p>";
+            echo "<p><strong>Montant :</strong> " . number_format($vente['montant_total'], 2) . " €</p>";
+            echo "</div>";
+        }
+
+        echo "</div>";
+    }
 
 
 
@@ -63,6 +90,7 @@ class VueBarman extends VueGenerique {
         echo "<br>";
         echo "<a href='index.php?module=barman&action=gestionVentes'>💰 Gérer les ventes</a><br><br>";
         echo "<a href='index.php?module=barman&action=voirStock'>📦 Voir le stock</a><br><br>";
+        echo "<a href='index.php?module=barman&action=historique'>📝 Historique des ventes</a><br><br>";
         echo "<a href='index.php?module=connexion&action=deconnexion'>🚪 Déconnexion</a>";
         echo "</div>";
     }

@@ -23,7 +23,8 @@ class ContBarman {
             exit();
         }
 
-        $stock = $this->modele->getStock();
+        $idAssociation = $_SESSION['id_association'];
+        $stock = $this->modele->getStock($idAssociation);
         $this->vue->afficherStock($stock);
     }
 
@@ -50,7 +51,33 @@ class ContBarman {
             $idAssociation = $demande['id_association'];
             $montantTotal = $demande['montant_total'];
 
+            // Récupération du panier temporaire
             $panier = $_SESSION['demande_temp'][$idUtilisateur] ?? [];
+
+            // Vérification du solde du client
+            $solde = $this->modele->getSoldeClient($idUtilisateur, $idAssociation);
+            if ($solde < $montantTotal) {
+                echo "<p>❌ Solde insuffisant pour valider cette demande.</p>";
+                $this->gestionDemandes();
+                return;
+            }
+
+            // Vérification du stock disponible
+            $stockOk = true;
+            foreach ($panier as $item) {
+                $stockProduit = $this->modele->getStockProduit($idAssociation, $item['id_produit']);
+                if ($item['quantite'] > $stockProduit) {
+                    echo "<p>❌ Stock insuffisant pour : " . htmlspecialchars($item['nom']) . "</p>";
+                    $stockOk = false;
+                }
+            }
+
+            if (!$stockOk) {
+                $this->gestionDemandes();
+                return;
+            }
+
+            // Tout est OK → on valide la demande
             $this->modele->debiterClient($idUtilisateur, $idAssociation, $montantTotal);
             $idVente = $this->modele->creerVente($idUtilisateur, $montantTotal);
             $this->modele->insererDetailVente($idVente, $panier);
@@ -58,11 +85,13 @@ class ContBarman {
             $this->modele->crediterGestionnaire($idAssociation, $montantTotal);
             $this->modele->supprimerDemande($idDemande);
             $this->modele->supprimerPanierTemp($idUtilisateur);
+
             echo "<p>✅ Demande validée</p>";
         }
 
         $this->gestionDemandes();
     }
+
 
     public function refuserDemande() {
         if (!isset($_SESSION['id_role']) || $_SESSION['id_role'] != 3) {
@@ -87,6 +116,16 @@ class ContBarman {
     }
 
 
+    public function voirHistorique() {
+        if (!isset($_SESSION['id_role']) || $_SESSION['id_role'] != 3) {
+            echo "<p>Accès refusé : vous devez être barman.</p>";
+            exit();
+        }
+
+        $idAssociation = $_SESSION['id_association'];
+        $historique = $this->modele->getHistoriqueVentes($idAssociation);
+        $this->vue->afficherHistorique($historique);
+    }
 
 
 

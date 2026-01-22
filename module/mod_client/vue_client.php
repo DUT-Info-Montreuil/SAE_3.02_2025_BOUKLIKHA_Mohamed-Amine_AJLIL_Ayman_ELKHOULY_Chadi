@@ -128,45 +128,91 @@ class VueClient extends VueGenerique {
 
 
     public function formAchatClient($produits, $panier = []) {
-        echo "<div class='card'><h2>Boutique</h2>";
 
-        echo "<form method='post' action='index.php?module=client&action=ajouterAuPanierClient'>";
-        echo "<select name='id_produit'>";
+        echo "<h2>🛒 Boutique</h2>";
+        echo "<div class='stock-container'>";
+
         foreach ($produits as $p) {
-            echo "<option value='". htmlspecialchars($p['id_produit']) ."' data-prix='". htmlspecialchars($p['prix']) ."' data-nom='". htmlspecialchars($p['nom']) ."'> ". htmlspecialchars($p['nom']) ." (". htmlspecialchars($p['prix']) ." €)</option>";
+            echo "<div class='stock-card'>";
+            echo "<h3>". htmlspecialchars($p['nom']) ."</h3>";
+            echo "<p>". number_format($p['prix'],2) ." €</p>";
+            // image
+
+            echo "
+        <form method='post' action='index.php?module=client&action=ajouterAuPanierClient' class='stock-actions'>
+            <input type='hidden' name='id_produit' value='{$p['id_produit']}'>
+            <button name='quantite' value='-1'>−</button>
+            <button name='quantite' value='1'>+</button>
+        </form>";
+
+            echo "</div>";
         }
-        echo "</select>";
 
-        echo "<input type='number' name='quantite' value='1' min='1'>";
-        echo "<input type='hidden' name='prix' id='prix'>";
-        echo "<input type='hidden' name='nom' id='nom'>";
-        echo "<input type='submit' value='Ajouter'>";
-        echo "</form>";
+        echo "</div>";
 
-        echo "<h3>Panier</h3>";
+        /* PANIER */
+        echo "<h3>🧺 Mon panier</h3>";
 
-        if (!empty($panier)) {
-            $total = 0;
-            foreach ($panier as $key => $item) {
-                $montant = (double)$item['prix'] * $item['quantite'];
-                $total += $montant;
+        if (empty($panier)) {
+            echo "<p>Panier vide</p>";
+            return;
+        }
 
-                echo "". htmlspecialchars($item['nom']) ." x ". htmlspecialchars($item['quantite']) ." = $montant € 
-                <form method='post' action='index.php?module=client&action=supprimerDuPanierClient'>
-                    <input type='hidden' name='key' value='$key'>
-                    <input type='submit' value='Supprimer'>
-                </form><br>";
+        $total = 0;
+        foreach ($panier as $key => $item) {
+            $sousTotal = $item['prix'] * $item['quantite'];
+            $total += $sousTotal;
+
+            echo "<div class='card'>";
+            echo htmlspecialchars($item['nom']) . " x " . $item['quantite'] . " = " . number_format($sousTotal,2) . " €";
+            echo "
+        <form method='post' action='index.php?module=client&action=supprimerDuPanierClient'>
+            <input type='hidden' name='key' value='$key'>
+            <button>Retirer</button>
+        </form>";
+            echo "</div>";
+        }
+
+        echo "<h3>Total : ". number_format($total,2) ." €</h3>";
+
+        echo "<form method='post' action='index.php?module=client&action=validerPanierClient'>
+            <button>💳 Payer</button>
+          </form>";
+    }
+
+
+    public function afficherHistorique($lignes) {
+
+        echo "<h2>📜 Historique de mes commandes</h2>";
+
+        if (empty($lignes)) {
+            echo "<p>Aucune commande validée pour le moment.</p>";
+            return;
+        }
+
+        $courante = null;
+
+        foreach ($lignes as $l) {
+
+            // nouvelle commande
+            if ($courante != $l['id_vente']) {
+                if ($courante !== null) echo "</div>";
+
+                echo "<div class='card'>";
+                echo "<h3>Commande du " . date("d/m H:i", strtotime($l['date_vente'])) . "</h3>";
+                echo "<p>Total : " . number_format($l['montant_total'], 2) . " €</p>";
+                echo "<span style='color:green'>🟢 Validée</span><hr>";
+
+                $courante = $l['id_vente'];
             }
 
-            echo "<strong>Total : $total €</strong>";
-
-            echo "<form method='post' action='index.php?module=client&action=validerPanierClient'>
-                <input type='submit' value='Payer'>
-              </form>";
+            echo "<p>" . htmlspecialchars($l['nom']) . " × " . $l['quantite'] .
+                " — " . number_format($l['prix_unitaire'],2) . " €</p>";
         }
 
         echo "</div>";
     }
+
 
 
 

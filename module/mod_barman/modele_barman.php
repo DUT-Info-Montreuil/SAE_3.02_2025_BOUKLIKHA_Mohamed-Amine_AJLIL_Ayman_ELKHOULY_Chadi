@@ -8,13 +8,10 @@ class ModeleBarman extends Connexion {
         self::initConnexion();
     }
 
-    public function getStock() {
-        $req = self::$bdd->prepare( "SELECT p.id_produit, p.nom, p.type, p.prix, COALESCE(SUM(dA.quantite),0) - COALESCE(SUM(dV.quantite),0) AS stockDispo
-            FROM Produit p
-            LEFT JOIN detailAchat dA ON p.id_produit = dA.id_produit
-            LEFT JOIN detailVente dV ON p.id_produit = dV.id_produit
-            GROUP BY p.id_produit, p.nom, p.type, p.prix");
-        $req->execute();
+    public function getStock($idAssociation) {
+        $req = self::$bdd->prepare("SELECT  p.id_produit, p.nom, p.type, p.prix, COALESCE(c.quantite_inventaire, 0) AS stockDispo FROM Produit p JOIN Contient c ON p.id_produit = c.id_produit
+        JOIN Inventaire i ON c.id_inventaire = i.id_inventaire WHERE i.id_association = ? ORDER BY p.nom");
+        $req->execute([$idAssociation]);
         return $req->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -46,6 +43,28 @@ class ModeleBarman extends Connexion {
         $req->execute([$montantTotal, $idUtilisateur]);
         return self::$bdd->lastInsertId();
     }
+
+    public function getSoldeClient($idUtilisateur, $idAssociation) {
+        $req = self::$bdd->prepare("SELECT solde FROM Affectation WHERE id_utilisateur = ? AND id_association = ?");
+        $req->execute([$idUtilisateur, $idAssociation]);
+        return (float)$req->fetchColumn();
+    }
+
+    public function getStockProduit($idAssociation, $idProduit) {
+        $req = self::$bdd->prepare("
+        SELECT c.quantite_inventaire 
+        FROM Contient c 
+        JOIN Inventaire i ON c.id_inventaire = i.id_inventaire 
+        WHERE i.id_association = ? AND c.id_produit = ?");
+        $req->execute([$idAssociation, $idProduit]);
+        $qte = $req->fetchColumn();
+        if ($qte !== false) {
+            return (int)$qte;
+        } else {
+            return 0;
+        }
+    }
+
 
     public function insererDetailVente($idVente, $panier) {
         foreach ($panier as $item) {
@@ -80,6 +99,20 @@ class ModeleBarman extends Connexion {
     public function supprimerPanierTemp($idUtilisateur) {
         unset($_SESSION['demande_temp'][$idUtilisateur]);
     }
+
+    public function getHistoriqueVentes($idAssociation) {
+        $req = self::$bdd->prepare("
+        SELECT v.id_vente, v.date_vente, v.montant_total, u.prenom, u.nom
+        FROM Vente v
+        JOIN Utilisateur u ON v.id_utilisateur = u.id_utilisateur
+        JOIN Affectation a ON u.id_utilisateur = a.id_utilisateur
+        WHERE a.id_association = ?
+        ORDER BY v.date_vente DESC
+    ");
+        $req->execute([$idAssociation]);
+        return $req->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 
 
 }
