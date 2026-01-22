@@ -47,7 +47,6 @@ class VueBarman extends VueGenerique {
             foreach ($demandes as $demande) {
                 echo "<div class='card'>";
                 echo "<p><strong>Client :</strong> " . htmlspecialchars($demande['prenom']) . " " . htmlspecialchars($demande['nom']) . "</p>";
-                echo "<p><strong>Association :</strong> " . htmlspecialchars($demande['nom_asso']) . "</p>";
                 echo "<p><strong>Montant total :</strong> " . number_format($demande['montant_total'], 2) . " €</p>";
 
                 echo "<form method='post' action='index.php?module=barman&action=validerDemande'>";

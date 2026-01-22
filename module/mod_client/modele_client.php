@@ -31,7 +31,7 @@ class ModeleClient extends Connexion {
 
 
     public function getProduitsDisponibles($idAssociation) {
-        $req = self::$bdd->prepare("SELECT p.id_produit, p.nom, p.prix, c.quantite_inventaire FROM Inventaire i JOIN Contient c ON i.id_inventaire = c.id_inventaire JOIN Produit p ON c.id_produit = p.id_produit WHERE i.id_association = ? AND c.quantite_inventaire > 0");
+        $req = self::$bdd->prepare("SELECT p.id_produit, p.nom, p.prix, p.image, c.quantite_inventaire FROM Inventaire i JOIN Contient c ON i.id_inventaire = c.id_inventaire JOIN Produit p ON c.id_produit = p.id_produit WHERE i.id_association = ? AND c.quantite_inventaire > 0");
         $req->execute([$idAssociation]);
         return $req->fetchAll(PDO::FETCH_ASSOC);
     }
