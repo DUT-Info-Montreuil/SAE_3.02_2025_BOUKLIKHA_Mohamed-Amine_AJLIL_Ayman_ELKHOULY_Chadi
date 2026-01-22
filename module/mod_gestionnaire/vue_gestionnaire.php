@@ -198,6 +198,26 @@ class VueGestionnaire extends VueGenerique {
     }
 
 
+    public function afficherBilan($solde, $bilanJour, $bilanMois) {
+        echo "<div class='card'>";
+        echo "<h2>💰 Solde de l'association : " . number_format($solde,2) . " €</h2>";
+
+        echo "<h3>Bilan journalier (" . $bilanJour['date'] . ")</h3>";
+        echo "<p>Recettes : " . number_format($bilanJour['recettes'],2) . " €</p>";
+        echo "<p>Dépenses : " . number_format($bilanJour['depenses'],2) . " €</p>";
+        echo "<p><strong>Total : " . number_format($bilanJour['total'],2) . " €</strong></p>";
+
+        echo "<h3>Bilan mensuel (" . $bilanMois['mois'] . ")</h3>";
+        echo "<p>Recettes : " . number_format($bilanMois['recettes'],2) . " €</p>";
+        echo "<p>Dépenses : " . number_format($bilanMois['depenses'],2) . " €</p>";
+        echo "<p><strong>Total : " . number_format($bilanMois['total'],2) . " €</strong></p>";
+
+        echo "<a href='index.php?module=gestionnaire&action=accueil'>⬅ Retour</a>";
+        echo "</div>";
+    }
+
+
+
 
     public function afficherAccueil() {
         echo "<div class='card'>";
@@ -208,7 +228,7 @@ class VueGestionnaire extends VueGenerique {
         echo "<a href='index.php?module=gestionnaire&action=creerBarman'>👤 Créer un barman</a><br><br>";
         echo "<a href='index.php?module=gestionnaire&action=creerFournisseur'>📦 Créer un fournisseur</a><br><br>";
         echo "<a href='index.php?module=gestionnaire&action=creerProduit'>🍾 Créer un produit</a><br><br>";
-        echo "<a href='index.php?module=gestionnaire&action=voirSolde'>💰 Consulter le solde de l'association</a><br><br>";
+        echo "<a href='index.php?module=gestionnaire&action=voirBilan'>💰 Consulter le solde de l'association</a><br><br>";
         echo "<a href='index.php?module=gestionnaire&action=acheterProduit'>🛒 Acheter des produits</a><br><br>";
         echo "<a href='index.php?module=gestionnaire&action=inventaire'>📊 Gérer l'inventaire</a><br><br>";
         echo "<a href='index.php?module=connexion&action=deconnexion'>🚪 Déconnexion</a>";

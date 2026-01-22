@@ -163,6 +163,91 @@ class ModeleGestionnaire extends Connexion {
         $req->execute([$idUtilisateur, $idAssociation]);
     }
 
+    public function getRecettesJour($idAssociation, $date){
+        // Si aucune date passée, on prend aujourd'hui
+        if ($date == null || $date == '') {
+            $date = date('Y-m-d');
+        }
+
+        $req = self::$bdd->prepare("
+        SELECT SUM(dv.quantite * p.prix) AS total
+        FROM detailVente dv
+        JOIN Vente v ON dv.id_vente = v.id_vente
+        JOIN Produit p ON dv.id_produit = p.id_produit
+        JOIN Affectation af ON v.id_utilisateur = af.id_utilisateur
+        WHERE af.id_association = ? AND DATE(v.date_vente) = ?");
+        $req->execute([$idAssociation, $date]);
+        $total = $req->fetchColumn();
+
+        if ($total == null) {
+            return 0;
+        }
+        return $total;
+    }
+
+
+    public function getDepensesJour($idAssociation, $date) {
+        if ($date == null || $date == '') {
+            $date = date('Y-m-d');
+        }
+
+        $req = self::$bdd->prepare("
+        SELECT SUM(prix_achat) AS total
+        FROM detailAchat da
+        JOIN Achat a ON da.id_achat = a.id_achat
+        WHERE a.id_association = ? AND DATE(a.date_achat) = ?");
+        $req->execute([$idAssociation, $date]);
+        $total = $req->fetchColumn();
+
+        if ($total == null) {
+            return 0;
+        }
+        return $total;
+    }
+
+// Recettes pour un mois donné (YYYY-MM)
+    public function getRecettesMois($idAssociation, $mois) {
+        if ($mois == null || $mois == '') {
+            $mois = date('Y-m');
+        }
+
+        $req = self::$bdd->prepare("
+        SELECT SUM(dv.quantite * p.prix) AS total
+        FROM detailVente dv
+        JOIN Vente v ON dv.id_vente = v.id_vente
+        JOIN Produit p ON dv.id_produit = p.id_produit
+        JOIN Affectation af ON v.id_utilisateur = af.id_utilisateur
+        WHERE af.id_association = ? AND DATE_FORMAT(v.date_vente, '%Y-%m') = ?");
+        $req->execute([$idAssociation, $mois]);
+        $total = $req->fetchColumn();
+
+        if ($total == null) {
+            return 0;
+        }
+        return $total;
+    }
+
+
+    public function getDepensesMois($idAssociation, $mois) {
+        if ($mois == null || $mois == '') {
+            $mois = date('Y-m');
+        }
+
+        $req = self::$bdd->prepare("
+        SELECT SUM(prix_achat) AS total
+        FROM detailAchat da
+        JOIN Achat a ON da.id_achat = a.id_achat
+        WHERE a.id_association = ? AND DATE_FORMAT(a.date_achat, '%Y-%m') = ?");
+        $req->execute([$idAssociation, $mois]);
+        $total = $req->fetchColumn();
+
+        if ($total == null) {
+            return 0;
+        }
+        return $total;
+    }
+
+
 
 
     /* ================= INVENTAIRE ================= */

@@ -55,6 +55,10 @@ class ModGestionnaire {
             case 'voirSolde':
                 $this->controleur->voirSolde();
                 break;
+            case 'voirBilan':
+                $this->controleur->voirBilan();
+                break;
+
 
 
 

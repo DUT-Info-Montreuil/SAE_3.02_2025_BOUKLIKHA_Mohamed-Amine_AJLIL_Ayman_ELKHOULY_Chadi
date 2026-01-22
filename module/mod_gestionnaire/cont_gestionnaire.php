@@ -151,6 +151,27 @@ class ContGestionnaire {
         $this->vue->afficherSolde($solde);
     }
 
+    public function voirBilan() {
+        $idAsso = $_SESSION['id_association'];
+        $solde = $this->modele->getSoldeGestionnaire($_SESSION['id_utilisateur']);
+
+        $dateJour = date('Y-m-d');
+        $mois = date('Y-m');
+
+        $recettesJour = $this->modele->getRecettesJour($idAsso, $dateJour);
+        $depensesJour = $this->modele->getDepensesJour($idAsso, $dateJour);
+
+        $recettesMois = $this->modele->getRecettesMois($idAsso, $mois);
+        $depensesMois = $this->modele->getDepensesMois($idAsso, $mois);
+
+        $bilanJour = ['date' => $dateJour, 'recettes' => $recettesJour, 'depenses' => $depensesJour, 'total' => $recettesJour - $depensesJour];
+
+        $bilanMois = ['mois' => $mois, 'recettes' => $recettesMois, 'depenses' => $depensesMois, 'total' => $recettesMois - $depensesMois];
+
+        $this->vue->afficherBilan($solde, $bilanJour, $bilanMois);
+    }
+
+
     public function validationClients() {
         if ($_SESSION['id_role'] != 2) {
             echo "Accès refusé";
