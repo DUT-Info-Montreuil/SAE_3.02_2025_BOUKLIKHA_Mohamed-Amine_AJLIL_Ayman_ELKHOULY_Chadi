@@ -97,12 +97,11 @@ class ModeleClient extends Connexion {
     }
 
 
-    public function getAffectation($idUtilisateur) {
-        $req = self::$bdd->prepare("SELECT * FROM Affectation WHERE id_utilisateur = ? ");
-        $req->execute([$idUtilisateur]);
-        return $req->fetch();
+    public function getAffectation($idUtilisateur, $idAssociation) {
+    $req = self::$bdd->prepare("SELECT *  FROM Affectation  WHERE id_utilisateur = ?  AND id_association = ?");
+    $req->execute([$idUtilisateur, $idAssociation]);
+    return $req->fetch(PDO::FETCH_ASSOC);
     }
-
 
     public function getAssociationsClient($idUtilisateur) {
         $req = self::$bdd->prepare("SELECT a.id_association, a.nom_asso, af.solde FROM Association a JOIN Affectation af ON a.id_association = af.id_association
