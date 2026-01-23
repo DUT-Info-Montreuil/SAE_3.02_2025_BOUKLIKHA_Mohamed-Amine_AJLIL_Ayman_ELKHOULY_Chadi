@@ -128,7 +128,7 @@ class ModeleClient extends Connexion {
 
 
     public function getHistoriqueClient($idUtilisateur) {
-        $req = self::$bdd->prepare("SELECT v.id_vente, v.date_vente, v.montant_total, p.nom, dv.quantite, dv.prix_unitaire FROM Vente v JOIN DetailVente dv ON v.id_vente = dv.id_vente JOIN Produit p ON dv.id_produit = p.id_produit
+        $req = self::$bdd->prepare("SELECT v.id_vente, v.date_vente, v.montant_total, p.nom, dv.quantite, dv.prix_unitaire FROM Vente v JOIN detailVente dv ON v.id_vente = dv.id_vente JOIN Produit p ON dv.id_produit = p.id_produit
         WHERE v.id_utilisateur = ? ORDER BY v.date_vente DESC");
         $req->execute([$idUtilisateur]);
         return $req->fetchAll(PDO::FETCH_ASSOC);

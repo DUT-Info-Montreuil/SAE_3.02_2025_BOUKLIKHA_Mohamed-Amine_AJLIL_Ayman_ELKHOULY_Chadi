@@ -66,7 +66,7 @@ class ModeleBarman extends Connexion {
 
     public function insererDetailVente($idVente, $panier) {
         foreach ($panier as $item) {
-            $req = self::$bdd->prepare("INSERT INTO DetailVente (id_vente, id_produit, quantite, prix_unitaire) VALUES (?, ?, ?, ?)");
+            $req = self::$bdd->prepare("INSERT INTO detailVente (id_vente, id_produit, quantite, prix_unitaire) VALUES (?, ?, ?, ?)");
             $req->execute([$idVente, $item['id_produit'], $item['quantite'], $item['prix']]);
         }
     }
